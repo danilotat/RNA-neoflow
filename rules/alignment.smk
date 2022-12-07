@@ -1,0 +1,24 @@
+rule align:
+    input:
+        unpack(get_fastq),
+        index = config["resources"]["star_index"]
+    output:
+        temp(config["datadirs"]["mapped_reads"] + "/" + "{patient}_Aligned.out.bam")
+        # temp(dir(config["datadirs"]["mapped_reads"] + "/" + "{patient}__STARgenome")),
+        # temp(dir(config["datadirs"]["mapped_reads"] + "/" + "{patient}__STARpass1"))
+    conda:
+        "../envs/star.yml"
+    params:
+        index = lambda wc, input: input.index,
+        prefix = config["datadirs"]["mapped_reads"] + '/{patient}_',
+        extra = "--sjdbGTFfile {} {}".format(config["resources"]["gtf"], config["params"]["star"])
+    threads:
+        config["params"]["threads"]["STAR"]
+    log:
+        config["datadirs"]["logs"]["align"] + "/" + "{patient}.log"
+    shell:
+        '''
+        STAR --readFilesIn {input.r1} {input.r2} \
+        --genomeDir {input.index} --runThreadN {threads} \
+        --outFileNamePrefix {params.prefix} {params.extra}
+        '''

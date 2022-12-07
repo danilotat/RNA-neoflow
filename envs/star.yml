@@ -1,0 +1,8 @@
+name: star
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - star=2.7.8a=h9ee0642_1
+prefix: /hpc/home/danilo.tatoni/.conda/envs/star
