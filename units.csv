@@ -1,9 +1,4 @@
 patient,fq1,fq2
-Pt15,/hpc/scratch/danilo.tatoni/anti_PD_1/SRR3184291_1.fastq.gz,/hpc/scratch/danilo.tatoni/anti_PD_1/SRR3184291_2.fastq.gz
-Pt7,/hpc/scratch/danilo.tatoni/anti_PD_1/SRR3184284_1.fastq.gz,/hpc/scratch/danilo.tatoni/anti_PD_1/SRR3184284_2.fastq.gz
-Pt8,/hpc/scratch/danilo.tatoni/anti_PD_1/SRR3184285_1.fastq.gz,/hpc/scratch/danilo.tatoni/anti_PD_1/SRR3184285_2.fastq.gz
-Pt14,/hpc/scratch/danilo.tatoni/anti_PD_1/SRR3184290_1.fastq.gz,/hpc/scratch/danilo.tatoni/anti_PD_1/SRR3184290_2.fastq.gz
-Pt10,/hpc/scratch/danilo.tatoni/anti_PD_1/SRR3184287_1.fastq.gz,/hpc/scratch/danilo.tatoni/anti_PD_1/SRR3184287_2.fastq.gz
-Pt9,/hpc/scratch/danilo.tatoni/anti_PD_1/SRR3184286_1.fastq.gz,/hpc/scratch/danilo.tatoni/anti_PD_1/SRR3184286_2.fastq.gz
-Pt13,/hpc/scratch/danilo.tatoni/anti_PD_1/SRR3184289_1.fastq.gz,/hpc/scratch/danilo.tatoni/anti_PD_1/SRR3184289_2.fastq.gz
-Pt12,/hpc/scratch/danilo.tatoni/anti_PD_1/SRR3184288_1.fastq.gz,/hpc/scratch/danilo.tatoni/anti_PD_1/SRR3184288_2.fastq.gz
+Pt1,test_data/patient1_tumor_1.fastq.gz,test_data/patient1_tumor_2.fastq.gz
+Pt1,test_data/patient1_tumor_2.fastq.gz,test_data/patient2_tumor_2.fastq.gz
+Pt1,test_data/patient1_tumor_3.fastq.gz,test_data/patient3_tumor_2.fastq.gz
