@@ -26,6 +26,7 @@ datadirs:
     bam_readcount: "/hpc/scratch/danilo.tatoni/Neoepi_output/log/bam_readcount"
     base_recalibration: "/hpc/scratch/danilo.tatoni/Neoepi_output/log/base_recalibration"
     decompose: "/hpc/scratch/danilo.tatoni/Neoepi_output/log/decompose"
+    t1k: "/hpc/scratch/danilo.tatoni/Neoepi_output/log/t1k"
     arcasHLA: "/hpc/scratch/danilo.tatoni/Neoepi_output/log/arcasHLA"
     star_idx:  "/hpc/scratch/danilo.tatoni/Neoepi_output/log/star_idx"
     pvacseq: "/hpc/scratch/danilo.tatoni/Neoepi_output/log/pvacseq"
@@ -63,6 +64,7 @@ resources:
 params:
   threads:
     STAR: 16
+    t1k: 8
     salmon: 8
     arcasHLA: 2
     mark_duplicates: 4
@@ -72,8 +74,9 @@ params:
     mark_duplicates: 30000
     splitNcigar: 30000
     BQSR: 30000 
-  star: "--twopassMode Basic --outSAMtype BAM Unsorted --readFilesCommand zcat " # extra params for STAR
+  star: "--twopassMode Basic --outSAMtype BAM SortedByCoordinate --readFilesCommand zcat " # extra params for STAR
   salmon:
+    index: "--keep-duplicates"
     libtype: "A"
     zip_ext: "gz"
     extra: "--gcBias --seqBias --reduceGCMemory"
@@ -92,6 +95,7 @@ params:
     QD: '"QD < 2.0"'
   annotate_variants:
     assembly: "GRCh38"
+    filtering: "--gencode_basic --coding_only --no_intergenic"
   vcf_readcount_annotator:
     dna_or_rna: "RNA"
   vcf_expression_annotator:

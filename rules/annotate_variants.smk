@@ -7,7 +7,8 @@ rule annotate_variants:
     output:
         vcfout = config["datadirs"]["VCF_out"]+"/"+"{patient}.annotated.vcf"
     params:
-        assembly = config["params"]["annotate_variants"]["assembly"]
+        assembly = config["params"]["annotate_variants"]["assembly"],
+        filtering = config["params"]["annotate_variant"]["filtering"]
     log:
         config["datadirs"]["logs"]["annotate_variants"] + "/" + "{patient}.log"
     shell:
@@ -15,6 +16,7 @@ rule annotate_variants:
         vep --input_file {input.vcf} \
         --output_file {output.vcfout} \
         --format vcf --vcf --symbol --terms SO --tsl \
+        -{params.filtering} \
         --assembly {params.assembly} --offline --cache --dir_cache {input.cache} \
         --plugin Frameshift --plugin Wildtype --force_overwrite \
         --dir_plugins {input.plugins}

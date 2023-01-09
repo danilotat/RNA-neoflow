@@ -3,7 +3,7 @@ rule align:
         unpack(get_fastq),
         index = config["resources"]["star_index"]
     output:
-        temp(config["datadirs"]["mapped_reads"] + "/" + "{patient}_Aligned.out.bam")
+        temp(config["datadirs"]["mapped_reads"] + "/" + "{patient}_Aligned.sortedByCoord.out.bam")
         # temp(dir(config["datadirs"]["mapped_reads"] + "/" + "{patient}__STARgenome")),
         # temp(dir(config["datadirs"]["mapped_reads"] + "/" + "{patient}__STARpass1"))
     conda:

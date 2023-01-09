@@ -1,0 +1,10 @@
+.snakemake/
+nohup.out
+slurm/
+slurm_command
+slurm-logs
+dag.pdf
+documentation.md
+esk.sh
+Notes_snakemake.md
+pipeline.md
