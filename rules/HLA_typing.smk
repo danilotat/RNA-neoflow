@@ -5,20 +5,20 @@ rule genotype:
         unpack(get_fastq),
         idx=config["datadirs"]["utils"]+"/"+"hlaidx_rna_seq.fa"
     output:
-        temp(config['datadirs']['HLA_typing']+'/'+'{patient}_aligned_1.fa'),
-        temp(config['datadirs']['HLA_typing']+'/'+'{patient}_aligned_2.fa'),
-        temp(config['datadirs']['HLA_typing']+'/'+'{patient}_allele.tsv'),
-        temp(config['datadirs']['HLA_typing']+'/'+'{patient}_allele.vcf'),
-        temp(config['datadirs']['HLA_typing']+'/'+'{patient}_candidate_1.fq'),
-        temp(config['datadirs']['HLA_typing']+'/'+'{patient}_candidate_2.fq'),
-        config['datadirs']['HLA_typing']+'/'+'{patient}_genotype.tsv'
+        temp(config["OUTPUT_FOLDER"] + config["datadirs"]['HLA_typing']+'/'+'{patient}_aligned_1.fa'),
+        temp(config["OUTPUT_FOLDER"] + config["datadirs"]['HLA_typing']+'/'+'{patient}_aligned_2.fa'),
+        temp(config["OUTPUT_FOLDER"] + config["datadirs"]['HLA_typing']+'/'+'{patient}_allele.tsv'),
+        temp(config["OUTPUT_FOLDER"] + config["datadirs"]['HLA_typing']+'/'+'{patient}_allele.vcf'),
+        temp(config["OUTPUT_FOLDER"] + config["datadirs"]['HLA_typing']+'/'+'{patient}_candidate_1.fq'),
+        temp(config["OUTPUT_FOLDER"] + config["datadirs"]['HLA_typing']+'/'+'{patient}_candidate_2.fq'),
+        config["OUTPUT_FOLDER"] + config["datadirs"]['HLA_typing']+'/'+'{patient}_genotype.tsv'
     params:
         prefix='{patient}',
-        outdir=config['datadirs']['HLA_typing']
+        outdir=config["OUTPUT_FOLDER"] + config["datadirs"]['HLA_typing']
     conda:
         "../envs/t1k.yml"
     threads: config['params']['threads']['t1k']
-    log: config['datadirs']['logs']['t1k']
+    log: config["OUTPUT_FOLDER"] + config["datadirs"]['logs']['t1k']
     shell:
         """
         run-t1k -1 {input.r1} -2 {input.r2} --preset hla \
@@ -29,9 +29,9 @@ rule genotype:
 
 rule extract_hla:
     input:
-        config['datadirs']['HLA_typing']+'/'+'{patient}_genotype.tsv'
+        config["OUTPUT_FOLDER"] + config["datadirs"]['HLA_typing']+'/'+'{patient}_genotype.tsv'
     output:
-        config['datadirs']['HLA_typing']+'/'+'{patient}_allele_input_pvacseq.csv'
+        config["OUTPUT_FOLDER"] + config["datadirs"]['HLA_typing']+'/'+'{patient}_allele_input_pvacseq.csv'
     shell:
         "python3 ../scripts/HLA_typing {input} > {output}"
 

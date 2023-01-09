@@ -1,22 +1,22 @@
 rule ref_transcript_mismatch_reporter:
     input:
-        vcf_in = config["datadirs"]["VCF_out"] + "/" + "{patient}_vcf_expression_annotator.vcf" 
+        vcf_in = config["OUTPUT_FOLDER"] + config["datadirs"]["VCF_out"] + "/" + "{patient}_vcf_expression_annotator.vcf" 
     params:
         filter_vcf = config["params"]["ref_transcript_mismatch_reporter"]
     output:
-        vcf_out = temp(config["datadirs"]["VCF_out"] + "/" + "{patient}_ref_transcript_mismatch_reporter.vcf")
+        vcf_out = temp(config["OUTPUT_FOLDER"] + config["datadirs"]["VCF_out"] + "/" + "{patient}_ref_transcript_mismatch_reporter.vcf")
     conda:
         "../envs/vatools.yml"
     log:
-        config["datadirs"]["logs"]["ref_transcript_mismatch_reporter"]+'/'+"{patient}.log"
+        config["OUTPUT_FOLDER"] + config["datadirs"]["logs"]["ref_transcript_mismatch_reporter"]+'/'+"{patient}.log"
     shell:
         "ref-transcript-mismatch-reporter {input.vcf_in} --filter {params.filter_vcf} -o {output.vcf_out}"
 
 rule bgzip_mismatch_reporter:
     input:
-        vcf_in = config["datadirs"]["VCF_out"] + "/" + "{patient}_ref_transcript_mismatch_reporter.vcf"
+        vcf_in = config["OUTPUT_FOLDER"] + config["datadirs"]["VCF_out"] + "/" + "{patient}_ref_transcript_mismatch_reporter.vcf"
     output:
-        vcf_out = config["datadirs"]["VCF_out"] + "/" + "{patient}_ref_transcript_mismatch_reporter.vcf.gz"
+        vcf_out = config["OUTPUT_FOLDER"] + config["datadirs"]["VCF_out"] + "/" + "{patient}_ref_transcript_mismatch_reporter.vcf.gz"
     conda:
         "../envs/samtool.yml"
     shell:
@@ -25,9 +25,9 @@ rule bgzip_mismatch_reporter:
         """
 rule tabix_mismatch_reporter:
     input:
-        vcf_in = config["datadirs"]["VCF_out"] + "/" + "{patient}_ref_transcript_mismatch_reporter.vcf.gz"
+        vcf_in = config["OUTPUT_FOLDER"] + config["datadirs"]["VCF_out"] + "/" + "{patient}_ref_transcript_mismatch_reporter.vcf.gz"
     output:
-        vcf_out = config["datadirs"]["VCF_out"] + "/" + "{patient}_ref_transcript_mismatch_reporter.vcf.gz.tbi"
+        vcf_out = config["OUTPUT_FOLDER"] + config["datadirs"]["VCF_out"] + "/" + "{patient}_ref_transcript_mismatch_reporter.vcf.gz.tbi"
     conda:
         "../envs/tabix.yml"
     shell:

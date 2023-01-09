@@ -37,17 +37,13 @@ rule targets:
 include:
     "rules/alignment.smk"
 include:
-    "rules/sort_bam.smk"
-include:
     "rules/quantification.smk"
 include:
     "rules/bam_cleaning.smk"
 include:
     "rules/base_recalibration.smk"
-# include:
-#     "rules/HLA_typing.smk"
 include:
-    "rules/germline_calling.smk"
+    "rules/HLA_typing.smk"
 include:
     "rules/strelka.smk"
 include:
@@ -68,7 +64,5 @@ include:
     "rules/vcf_expression_annotator.smk"
 include:
     "rules/ref_transcript_mismatch_reporter.smk"
-include:
-    "rules/create_phased_VCF.smk"
 include:
     "rules/pvacseq.smk"

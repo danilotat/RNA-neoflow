@@ -2,15 +2,15 @@ rule Mutect2:
     input:
         reference=config["resources"]["mutect_reference"],
         genome=config["resources"]["genome"],
-        tumor=config["datadirs"]["BQSR_2"]+'/'+'{patient}_recal.pass2.bam',
-        intervals=config["datadirs"]["utils"]+"/interval-files/"+"{interval}-scattered.interval_list",
+        tumor=config["OUTPUT_FOLDER"] + config["datadirs"]["BQSR_2"]+'/'+'{patient}_recal.pass2.bam',
+        intervals=config["OUTPUT_FOLDER"] + config["datadirs"]["utils"]+"/interval-files/"+"{interval}-scattered.interval_list",
         PoN=config["resources"]["PoN"]
     params:
         extra=config["params"]["mutect2"]
     output:
-        vcf=temp(config["datadirs"]["VCF"]+"/{patient}.{interval}.unfiltered.vcf.gz"),
-        f1r2=temp(config["datadirs"]["VCF"]+"/{patient}.{interval}.f1r2.tar.gz"),
-        stats=temp(config["datadirs"]["VCF"]+"/{patient}.{interval}.unfiltered.vcf.gz.stats")
+        vcf=temp(config["OUTPUT_FOLDER"] + config["datadirs"]["VCF"]+"/{patient}.{interval}.unfiltered.vcf.gz"),
+        f1r2=temp(config["OUTPUT_FOLDER"] + config["datadirs"]["VCF"]+"/{patient}.{interval}.f1r2.tar.gz"),
+        stats=temp(config["OUTPUT_FOLDER"] + config["datadirs"]["VCF"]+"/{patient}.{interval}.unfiltered.vcf.gz.stats")
     conda:
         "../envs/gatk.yml"
     shell:
@@ -24,32 +24,16 @@ rule Mutect2:
         --f1r2-tar-gz {output.f1r2} -O {output.vcf}
         """
 
-# rule learn_orientation_model:
-#     input:
-#         get_orientationbias_input
-#     output:
-#         read_model=temp(config["datadirs"]["VCF"]+"/{patient}_read_orientation_model.tar.gz")
-#     params:
-#         i=lambda wildcards, input: ['-I ' + d for d in input]
-#     conda:
-#         "../envs/gatk.yml"
-#     log:
-#         config["datadirs"]["logs"]["snv_calling"]+'/'+"{patient}.log"
-#     shell:
-#         """
-#         gatk LearnReadOrientationModel {params.i} -O {output.read_model}
-#         """
-
 rule pileup_summaries:
     input:
-        bam=config["datadirs"]["BQSR_2"]+'/'+'{patient}_recal.pass2.bam',
+        bam=config["OUTPUT_FOLDER"] + config["datadirs"]["BQSR_2"]+'/'+'{patient}_recal.pass2.bam',
         germ_res=config["resources"]["contamination_resource"]
     output:
-        pileup_resume=config["datadirs"]["VCF"]+"/{patient}_pileupsummaries.table"
+        pileup_resume=config["OUTPUT_FOLDER"] + config["datadirs"]["VCF"]+"/{patient}_pileupsummaries.table"
     conda:
         "../envs/gatk.yml"
     log:
-        config["datadirs"]["logs"]["snv_calling"]+'/'+"{patient}.log"
+        config["OUTPUT_FOLDER"] + config["datadirs"]["logs"]["snv_calling"]+'/'+"{patient}.log"
     shell:
         """
         gatk GetPileupSummaries -I {input.bam} -V {input.germ_res} -L {input.germ_res} \
@@ -58,13 +42,13 @@ rule pileup_summaries:
 
 rule calculate_contamination:
     input:
-        pileup_resume=config["datadirs"]["VCF"]+"/{patient}_pileupsummaries.table"
+        pileup_resume=config["OUTPUT_FOLDER"] + config["datadirs"]["VCF"]+"/{patient}_pileupsummaries.table"
     output:
-        table=config["datadirs"]["VCF"]+"/{patient}_contamination.table"
+        table=config["OUTPUT_FOLDER"] + config["datadirs"]["VCF"]+"/{patient}_contamination.table"
     conda:
         "../envs/gatk.yml"
     log:
-        config["datadirs"]["logs"]["snv_calling"]+'/'+"{patient}.log"
+        config["OUTPUT_FOLDER"] + config["datadirs"]["logs"]["snv_calling"]+'/'+"{patient}.log"
     shell:
         "gatk CalculateContamination -I {input.pileup_resume} -O {output.table}"
 
@@ -72,7 +56,7 @@ rule merge_vcfs:
     input:
         get_mergevcfs_input
     output:
-        vcf=config["datadirs"]["VCF"]+"/{patient}.unfiltered.vcf.gz"
+        vcf=config["OUTPUT_FOLDER"] + config["datadirs"]["VCF"]+"/{patient}.unfiltered.vcf.gz"
     params:
         i=lambda wildcards, input: ['-I ' + vcf for vcf in input]
     conda:
@@ -86,7 +70,7 @@ rule merge_stats:
     input:
         get_mergestats_input
     output:
-        stats=config["datadirs"]["VCF"]+"/{patient}_unfiltered.vcf.stats"
+        stats=config["OUTPUT_FOLDER"] + config["datadirs"]["VCF"]+"/{patient}_unfiltered.vcf.stats"
     params:
         i=lambda wildcards, input: ['-stats ' + s for s in input]
     conda:
@@ -98,21 +82,21 @@ rule merge_stats:
 
 rule filtering_calls:
     input:
-        vcf_unfiltered=config["datadirs"]["VCF"]+"/{patient}.unfiltered.vcf.gz",
+        vcf_unfiltered=config["OUTPUT_FOLDER"] + config["datadirs"]["VCF"]+"/{patient}.unfiltered.vcf.gz",
         ref=config["resources"]["genome"],
-        contamination=config["datadirs"]["VCF"]+"/{patient}_contamination.table",
-        stats=config["datadirs"]["VCF"]+"/{patient}_unfiltered.vcf.stats"
-        # f1r2_model=config["datadirs"]["VCF"]+"/{patient}_read_orientation_model.tar.gz"
+        contamination=config["OUTPUT_FOLDER"] + config["datadirs"]["VCF"]+"/{patient}_contamination.table",
+        stats=config["OUTPUT_FOLDER"] + config["datadirs"]["VCF"]+"/{patient}_unfiltered.vcf.stats"
+        # f1r2_model=config["OUTPUT_FOLDER"] + config["datadirs"]["VCF"]+"/{patient}_read_orientation_model.tar.gz"
     output:
-        filtered_vcf=temp(config["datadirs"]["VCF"]+"/{patient}.filtered.vcf"),
-        idx=temp(config["datadirs"]["VCF"]+"/{patient}.filtered.vcf.idx"),
-        stats=config["datadirs"]["VCF"]+"/{patient}.filtered.vcf.filteringStats.tsv"
+        filtered_vcf=temp(config["OUTPUT_FOLDER"] + config["datadirs"]["VCF"]+"/{patient}.filtered.vcf"),
+        idx=temp(config["OUTPUT_FOLDER"] + config["datadirs"]["VCF"]+"/{patient}.filtered.vcf.idx"),
+        stats=config["OUTPUT_FOLDER"] + config["datadirs"]["VCF"]+"/{patient}.filtered.vcf.filteringStats.tsv"
     params:
         extra=config["params"]["FilterMutectCalls"]
     conda:
         "../envs/gatk.yml"
     log:
-        config["datadirs"]["logs"]["snv_calling"]+'/'+"{patient}.log"
+        config["OUTPUT_FOLDER"] + config["datadirs"]["logs"]["snv_calling"]+'/'+"{patient}.log"
     shell:
         """
         gatk FilterMutectCalls -V {input.vcf_unfiltered} -R {input.ref} \
@@ -123,10 +107,10 @@ rule filtering_calls:
 
 rule tabix_filtered_calls:
     input:
-        vcf=config["datadirs"]["VCF"]+"/{patient}.filtered.vcf"
+        vcf=config["OUTPUT_FOLDER"] + config["datadirs"]["VCF"]+"/{patient}.filtered.vcf"
     output:
-        vcf_gz=temp(config["datadirs"]["VCF"]+"/{patient}.filtered.vcf.gz"),
-        vcf_idx=temp(config["datadirs"]["VCF"]+"/{patient}.filtered.vcf.gz.tbi")
+        vcf_gz=temp(config["OUTPUT_FOLDER"] + config["datadirs"]["VCF"]+"/{patient}.filtered.vcf.gz"),
+        vcf_idx=temp(config["OUTPUT_FOLDER"] + config["datadirs"]["VCF"]+"/{patient}.filtered.vcf.gz.tbi")
     conda:
         '../envs/tabix.yml'
     shell:
@@ -138,10 +122,10 @@ rule tabix_filtered_calls:
 
 rule read_depth_filter:
     input:
-        vcf_in = config["datadirs"]["VCF"] + "/" + "{patient}.filtered.vcf.gz",
-        tabix_in = config["datadirs"]["VCF"] + "/" + "{patient}.filtered.vcf.gz.tbi"
+        vcf_in = config["OUTPUT_FOLDER"] + config["datadirs"]["VCF"] + "/" + "{patient}.filtered.vcf.gz",
+        tabix_in = config["OUTPUT_FOLDER"] + config["datadirs"]["VCF"] + "/" + "{patient}.filtered.vcf.gz.tbi"
     output:
-        vcf_out = config["datadirs"]["VCF"] + "/" + "{patient}.filtered_by_DP.vcf.gz"
+        vcf_out = config["OUTPUT_FOLDER"] + config["datadirs"]["VCF"] + "/" + "{patient}.filtered_by_DP.vcf.gz"
     params:
         depth = config["params"]["read_depth_filter"]
     conda:
@@ -153,9 +137,9 @@ rule read_depth_filter:
 
 rule tabix_DP:
     input:
-        vcf_in = config["datadirs"]["VCF"] + "/" + "{patient}.filtered_by_DP.vcf.gz"
+        vcf_in = config["OUTPUT_FOLDER"] + config["datadirs"]["VCF"] + "/" + "{patient}.filtered_by_DP.vcf.gz"
     output:
-        tabix_out = config["datadirs"]["VCF"] + "/" + "{patient}.filtered_by_DP.vcf.gz.tbi"
+        tabix_out = config["OUTPUT_FOLDER"] + config["datadirs"]["VCF"] + "/" + "{patient}.filtered_by_DP.vcf.gz.tbi"
     conda:
         "../envs/tabix.yml"
     shell:
@@ -165,10 +149,10 @@ rule tabix_DP:
 
 rule select_calls:
     input:
-        mutect2=config["datadirs"]["VCF"] + "/" + "{patient}.filtered_by_DP.vcf.gz",
-        strelka2=config['datadirs']['VCF_out']+'/'+'{patient}_workflow'+'/results/variants/'+'variants.vcf.gz'
+        mutect2=config["OUTPUT_FOLDER"] + config["datadirs"]["VCF"] + "/" + "{patient}.filtered_by_DP.vcf.gz",
+        strelka2=config["OUTPUT_FOLDER"] + config["OUTPUT_FOLDER"] + config["datadirs"]['VCF_out']+'/'+'{patient}_workflow'+'/results/variants/'+'variants.vcf.gz'
     output:
-        overlap_vcf=config['datadirs']['VCF_out']+'/'+'{patient}_overlap.vcf.gz'
+        overlap_vcf=config["OUTPUT_FOLDER"] + config["OUTPUT_FOLDER"] + config["datadirs"]['VCF_out']+'/'+'{patient}_overlap.vcf.gz'
     conda:
         "../envs/cyvcf2.yml"
     shell:
@@ -178,38 +162,13 @@ rule select_calls:
 
 rule tabix_overlap:
     input:
-        vcf_in = config["datadirs"]["VCF_out"] + "/" + "{patient}_overlap.vcf.gz"
+        vcf_in = config["OUTPUT_FOLDER"] + config["datadirs"]["VCF_out"] + "/" + "{patient}_overlap.vcf.gz"
     output:
-        tabix_out = config["datadirs"]["VCF_out"] + "/" + "{patient}_overlap.vcf.gz.tbi"
+        tabix_out = config["OUTPUT_FOLDER"] + config["datadirs"]["VCF_out"] + "/" + "{patient}_overlap.vcf.gz.tbi"
     conda:
         "../envs/tabix.yml"
     shell:
         """
         tabix -p vcf {input.vcf_in}
-
-
-
-# USELESS
-# rule select_calls:
-#     input:
-#         ref=config["resources"]["genome"],
-#         vcf=config["datadirs"]["VCF"]+"/{patient}.filtered.vcf",
-#         intervals=config["datadirs"]["utils"]+"/"+"coding.interval_list",
-#         idx=config["datadirs"]["VCF"]+"/{patient}.filtered.vcf.idx"
-#     output:
-#         vcf_selected=config["datadirs"]["VCF_out"]+"/{patient}.somatic.vcf"
-#     conda:
-#         "../envs/gatk.yml"   
-#     log:
-#         config["datadirs"]["logs"]["snv_calling"]+'/'+"{patient}.log"
-#     shell:
-#         """
-#         gatk SelectVariants -V {input.vcf} \
-#         -R {input.ref} \
-#         -O {output.vcf_selected} \
-#         -L {input.intervals} \
-#         --exclude-filtered \
-#         -OVI
-#         """
 
 

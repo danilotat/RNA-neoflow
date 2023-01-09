@@ -2,11 +2,11 @@ rule Strelka_prep:
     input:
         bam=config["datadirs"]["BQSR_2"]+'/'+'{patient}_recal.pass2.bam'
     output:
-        config['datadirs']['VCF_out']+'/'+'{patient}_workflow'+'/'+'runWorkflow.py'
+        config["OUTPUT_FOLDER"] + config["datadirs"]['VCF_out']+'/'+'{patient}_workflow'+'/'+'runWorkflow.py'
     params:
         ref_fasta=config['resources']['genome'],
         regions=config['resources']['intervals_coding'],
-        runDir=config['datadirs']['VCF_out']+'/'+'{patient}_workflow'
+        runDir=config["OUTPUT_FOLDER"] + config["datadirs"]['VCF_out']+'/'+'{patient}_workflow'
     conda:
         "../envs/strelka2.yml"
     shell:
@@ -21,9 +21,9 @@ rule Strelka_prep:
         """
 rule Strelka2:
     input:
-        script=config['datadirs']['VCF_out']+'/'+'{patient}_workflow'+'/'+'runWorkflow.py'
+        script=config["OUTPUT_FOLDER"] + config["datadirs"]['VCF_out']+'/'+'{patient}_workflow'+'/'+'runWorkflow.py'
     output:
-        config['datadirs']['VCF_out']+'/'+'{patient}_workflow'+'/results/variants/'+'variants.vcf.gz'
+        config["OUTPUT_FOLDER"] + config["datadirs"]['VCF_out']+'/'+'{patient}_workflow'+'/results/variants/'+'variants.vcf.gz'
     params:
         threads=config['params']['strelka2']['threads']
     conda:

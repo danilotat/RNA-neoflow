@@ -30,7 +30,6 @@ vcfs_germline_path = config['datadirs']['VCF_germ']
 num_workers = 20
 
 
-
 READ = ["1", "2"]
 
 wildcard_constraints:
@@ -44,7 +43,7 @@ def get_fastq(wildcards):
             'r2': units.loc[wildcards.patient, 'fq2']}
 
 def memory_for_gatk(gatk_mem: int):
-    """Quick script to return string parameter for gatk"""
+    """Quick workaround to return string parameter for gatk"""
     as_str=f'--java-options "-Xmx{gatk_mem}g"'
     return as_str
 
@@ -76,11 +75,6 @@ def get_orientationbias_input(wildcards):
 def get_mergevcfs_input(wildcards):
     intervals = get_intervals()
     files = [f"{vcfs_somatic_path}/{wildcards.patient}.{i}.unfiltered.vcf.gz" for i in intervals]
-    return files
-
-def get_mergevcfs_germ_input(wildcards):
-    intervals = get_intervals()
-    files = [f"{vcfs_germline_path}/{wildcards.patient}.{i}.unfiltered.vcf.gz" for i in intervals]
     return files
 
 def get_mergestats_input(wildcards):

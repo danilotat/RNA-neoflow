@@ -1,12 +1,12 @@
 rule BQSR_1:
     input:
-        bam=config["datadirs"]["bams"]+"/"+"{patient}_split.out.bam",
+        bam=config['OUTPUT_FOLDER'] + config["datadirs"]["bams"]+"/"+"{patient}_split.out.bam",
         GSNPs=config["resources"]["gsnps"],
         indel=config["resources"]["indel"],
         DbSNP=config["resources"]["dbsnps"],
         fasta=config["resources"]["genome"]
     output:
-        recall=temp(config["datadirs"]["bams"] + "/" + "{patient}_recal.table")
+        recall=temp(config['OUTPUT_FOLDER'] + config["datadirs"]["bams"] + "/" + "{patient}_recal.table")
     resources:
         mem_mb=config["params"]["RAM"]["BQSR"]
     threads: 
@@ -14,7 +14,7 @@ rule BQSR_1:
     conda:
         "../envs/gatk.yml"
     log:
-        config["datadirs"]["logs"]["base_recalibration"] + "/" + "{patient}.log"
+        config['OUTPUT_FOLDER'] + config["datadirs"]["logs"]["base_recalibration"] + "/" + "{patient}.log"
     shell:
         """
         gatk BaseRecalibrator \
@@ -28,11 +28,11 @@ rule BQSR_1:
 
 rule applyBQSR:
     input:
-        bam=config["datadirs"]["bams"]+"/"+"{patient}_split.out.bam",
+        bam=config['OUTPUT_FOLDER'] + config["datadirs"]["bams"]+"/"+"{patient}_split.out.bam",
         fasta=config["resources"]["genome"],
-        recall=config["datadirs"]["bams"] + "/" + "{patient}_recal.table"
+        recall=config['OUTPUT_FOLDER'] + config["datadirs"]["bams"] + "/" + "{patient}_recal.table"
     output:
-        rbam=temp(config["datadirs"]["bams"]+'/'+"{patient}_recal.pass1.bam")
+        rbam=temp(config['OUTPUT_FOLDER'] + config["datadirs"]["bams"]+'/'+"{patient}_recal.pass1.bam")
     threads: 
         config["params"]["threads"]["BQSR"]
     conda:
@@ -40,7 +40,7 @@ rule applyBQSR:
     resources:
         mem_mb=config["params"]["RAM"]["BQSR"]
     log:
-        config["datadirs"]["logs"]["base_recalibration"] + "/" + "{patient}.log"
+        config['OUTPUT_FOLDER'] + config["datadirs"]["logs"]["base_recalibration"] + "/" + "{patient}.log"
     shell:
         """
         gatk ApplyBQSR \
@@ -51,13 +51,13 @@ rule applyBQSR:
         """
 rule BQSR_Pass2:         
     input:
-        bam=config['datadirs']['bams'] + "/" + "{patient}_recal.pass1.bam",
+        bam=config["OUTPUT_FOLDER"] + config["datadirs"]['bams'] + "/" + "{patient}_recal.pass1.bam",
         GSNPs=config["resources"]["gsnps"],
         indel=config["resources"]["indel"],
         DbSNP=config["resources"]["dbsnps"],
         fasta=config["resources"]["genome"]
     output:
-        recall=temp(config['datadirs']['bams'] + "/" + "{patient}_recal_2.table")
+        recall=temp(config["OUTPUT_FOLDER"] + config["datadirs"]['bams'] + "/" + "{patient}_recal_2.table")
     threads: 
         config["params"]["threads"]["BQSR"]
     conda:
@@ -65,7 +65,7 @@ rule BQSR_Pass2:
     resources:
         mem_mb=config["params"]["RAM"]["BQSR"]
     log:
-        config["datadirs"]["logs"]["base_recalibration"] + "/" + "{patient}.log"
+        config['OUTPUT_FOLDER'] + config["datadirs"]["logs"]["base_recalibration"] + "/" + "{patient}.log"
     shell:
         """
         gatk BaseRecalibrator \
@@ -80,11 +80,11 @@ rule BQSR_Pass2:
 rule ApplyBQSR_2:
     # this is latest edited bam file, so we decide to keep it for further checks. 
     input:
-        bam=config['datadirs']['bams'] + "/" + "{patient}_recal.pass1.bam",
+        bam=config["OUTPUT_FOLDER"] + config["datadirs"]['bams'] + "/" + "{patient}_recal.pass1.bam",
         fasta=config["resources"]["genome"],
-        recall=config['datadirs']['bams'] + "/" + "{patient}_recal_2.table"
+        recall=config["OUTPUT_FOLDER"] + config["datadirs"]['bams'] + "/" + "{patient}_recal_2.table"
     output:
-        rbam=config['datadirs']['BQSR_2'] + "/" + "{patient}_recal.pass2.bam"
+        rbam=config["OUTPUT_FOLDER"] + config["datadirs"]['BQSR_2'] + "/" + "{patient}_recal.pass2.bam"
     threads: 
         config["params"]["threads"]["BQSR"]
     conda:
@@ -92,7 +92,7 @@ rule ApplyBQSR_2:
     resources:
         mem_mb=config["params"]["RAM"]["BQSR"]
     log:
-        config["datadirs"]["logs"]["base_recalibration"] + "/" + "{patient}.log"
+        config['OUTPUT_FOLDER'] + config["datadirs"]["logs"]["base_recalibration"] + "/" + "{patient}.log"
     shell:
         """
         gatk ApplyBQSR \

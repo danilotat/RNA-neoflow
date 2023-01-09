@@ -2,9 +2,9 @@
 
 rule AddGrp:
     input:
-        bam=config["datadirs"]["mapped_reads"]+"/"+"{patient}_Aligned.sortedByCoord.out.bam"
+        bam=config['OUTPUT_FOLDER'] + config["datadirs"]["mapped_reads"]+"/"+"{patient}_Aligned.sortedByCoord.out.bam"
     output:
-        rg=temp(config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.rg.bam")
+        rg=temp(config['OUTPUT_FOLDER'] + config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.rg.bam")
     conda:
         "../envs/gatk.yml"
     params:
@@ -12,7 +12,7 @@ rule AddGrp:
         RGSM="{patient}",
         extra="--RGLB rg1 --RGPL illumina"
     log:
-        config["datadirs"]["logs"]["bam_cleaning"] + "/" + "{patient}.log"
+        config['OUTPUT_FOLDER'] + config["datadirs"]["logs"]["bam_cleaning"] + "/" + "{patient}.log"
     shell:
         """
         gatk AddOrReplaceReadGroups  -I {input.bam} -O {output.rg} {params.extra} --RGPU {params.RGPU} --RGSM {params.RGSM}
@@ -23,7 +23,7 @@ rule bed_to_intervals:
         bed=config["resources"]["intervals_coding"],
         fasta_dict=ref_dict
     output:
-        intervals=config["datadirs"]["utils"]+"/"+"coding.interval_list"
+        intervals=config['OUTPUT_FOLDER'] + config["datadirs"]["utils"]+"/"+"coding.interval_list"
     conda:
         "../envs/gatk.yml"
     shell:
@@ -34,12 +34,12 @@ rule bed_to_intervals:
 rule split_intervals:
     input:
         ref=ref_fasta,
-        intervals=config["datadirs"]["utils"]+"/"+"coding.interval_list"
+        intervals=config['OUTPUT_FOLDER'] + config["datadirs"]["utils"]+"/"+"coding.interval_list"
     output:
         interval_files
     params:
         N=num_workers,
-        d=config["datadirs"]["utils"]+'/'+"interval-files"
+        d=config['OUTPUT_FOLDER'] + config["datadirs"]["utils"]+'/'+"interval-files"
     conda:
         "../envs/gatk.yml"
     shell:
@@ -52,10 +52,10 @@ rule split_intervals:
 
 rule mark_duplicates:
     input:
-        bam=config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.rg.bam"
+        bam=config['OUTPUT_FOLDER'] + config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.rg.bam"
     output:
-        bam=temp(config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.md.bam"),
-        metrics=temp(config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.metrics.txt")
+        bam=temp(config['OUTPUT_FOLDER'] + config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.md.bam"),
+        metrics=temp(config['OUTPUT_FOLDER'] + config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.metrics.txt")
     params:
         hard_ram=config["params"]["RAM"]["gatk"],
         temporary_dir=config["TEMP_DIR"]
@@ -66,7 +66,7 @@ rule mark_duplicates:
     resources: 
         mem_mb=config["params"]["RAM"]["mark_duplicates"]
     log:
-        config["datadirs"]["logs"]["bam_cleaning"] + "/" + "{patient}.log"
+        config['OUTPUT_FOLDER'] + config["datadirs"]["logs"]["bam_cleaning"] + "/" + "{patient}.log"
     shell:
         """
         gatk --java-options "-Xmx{params.hard_ram}g -XX:+UseParallelGC -XX:ParallelGCThreads={threads}" \
@@ -77,13 +77,13 @@ rule mark_duplicates:
 
 rule sort_bam_gatk:
     input:
-        bam=config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.md.bam"
+        bam=config['OUTPUT_FOLDER'] + config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.md.bam"
     output:
-        bam_out=temp(config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.md.sorted.bam")
+        bam_out=temp(config['OUTPUT_FOLDER'] + config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.md.sorted.bam")
     conda:
         "../envs/samtool.yml"
     log:
-        config["datadirs"]["logs"]["bam_cleaning"] + "/" + "{patient}.log"
+        config['OUTPUT_FOLDER'] + config["datadirs"]["logs"]["bam_cleaning"] + "/" + "{patient}.log"
     shell:
         """
         samtools sort {input.bam} -o {output.bam_out} 
@@ -91,13 +91,13 @@ rule sort_bam_gatk:
 
 rule samtools_index:
     input:
-        bam=config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.md.sorted.bam"
+        bam=config['OUTPUT_FOLDER'] + config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.md.sorted.bam"
     output:
-        bai=temp(config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.md.sorted.bam.bai")
+        bai=temp(config['OUTPUT_FOLDER'] + config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.md.sorted.bam.bai")
     conda:
         "../envs/samtool.yml"
     log:
-        config["datadirs"]["logs"]["bam_cleaning"] + "/" + "{patient}.log"
+        config['OUTPUT_FOLDER'] + config["datadirs"]["logs"]["bam_cleaning"] + "/" + "{patient}.log"
     shell:
         """
         samtools index {input.bam} {output.bai} 
@@ -105,12 +105,12 @@ rule samtools_index:
 
 rule splitNcigar:
     input:
-        bai=config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.md.sorted.bam.bai",
-        bam=config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.md.sorted.bam",
+        bai=config['OUTPUT_FOLDER'] + config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.md.sorted.bam.bai",
+        bam=config['OUTPUT_FOLDER'] + config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.md.sorted.bam",
         intervals=config["datadirs"]["utils"]+"/"+"coding.interval_list",
         fasta=config["resources"]["genome"]
     output:
-        sbam=temp(config["datadirs"]["bams"]+"/"+"{patient}_split.out.bam")
+        sbam=temp(config['OUTPUT_FOLDER'] + config["datadirs"]["bams"]+"/"+"{patient}_split.out.bam")
     params:
         temporary_dir=config["TEMP_DIR"],
     threads: 4
@@ -119,7 +119,7 @@ rule splitNcigar:
     resources:
         mem_mb=config["params"]["RAM"]["splitNcigar"]
     log:
-        config["datadirs"]["logs"]["bam_cleaning"] + "/" + "{patient}.log"
+        config['OUTPUT_FOLDER'] + config["datadirs"]["logs"]["bam_cleaning"] + "/" + "{patient}.log"
     shell:
         """
         gatk --java-options "-Xmx30g -XX:+UseParallelGC -XX:ParallelGCThreads={threads}" SplitNCigarReads -R {input.fasta} -I {input.bam} -O {output.sbam} \

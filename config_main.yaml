@@ -4,43 +4,53 @@
 TEMP_DIR: "/hpc/scratch/danilo.tatoni/temp_gatk"
 slurm_log_dir: slurm-logs
 
+# -- Base paths -- #
+
+OUTPUT_FOLDER : "/hpc/scratch/danilo.tatoni/Neoepi_output/"
+
+# -- Relative paths to concatenate -- #
 # -- OUTPUT STRUCTURE -- #
 datadirs:
-  trimmed_reads: "/hpc/scratch/danilo.tatoni/Neoepi_output/trimmed_reads"
-  trimming_report: "/hpc/scratch/danilo.tatoni/Neoepi_output/fastp_report"
-  mapped_reads:  "/hpc/scratch/danilo.tatoni/Neoepi_output/mapped_reads"
-  salmon_quant: "/hpc/scratch/danilo.tatoni/Neoepi_output/quantification"
-  expression: "/hpc/scratch/danilo.tatoni/Neoepi_output/expression_data"
-  bams: "/hpc/scratch/danilo.tatoni/Neoepi_output/bams"
-  utils: "/hpc/scratch/danilo.tatoni/Neoepi_output/utils"
-  HLA_typing: "/hpc/scratch/danilo.tatoni/Neoepi_output/HLA_typing"
-  BQSR_2:  "/hpc/scratch/danilo.tatoni/Neoepi_output/BQSR_2"
-  VCF:  "/hpc/scratch/danilo.tatoni/Neoepi_output/VCF"
-  VCF_germ: "/hpc/scratch/danilo.tatoni/Neoepi_output/VCF_germ"
-  VCF_out: "/hpc/scratch/danilo.tatoni/Neoepi_output/VCF_out"  
-  pvacseq_out: "/hpc/scratch/danilo.tatoni/Neoepi_output/Pvacseq_out"  
+  trimmed_reads: "trimmed_reads"
+  trimming_report: "fastp_report"
+  mapped_reads:  "mapped_reads"
+  salmon_quant: "quantification"
+  expression: "expression_data"
+  bams: "bams"
+  utils: "utils"
+  HLA_typing: "HLA_typing"
+  BQSR_2:  "BQSR_2"
+  VCF:  "VCF"
+  VCF_germ: "VCF_germ"
+  VCF_out: "VCF_out"  
+  pvacseq_out: "Pvacseq_out"  
   logs:
-    align: "/hpc/scratch/danilo.tatoni/Neoepi_output/log/align"
-    annotate_variants: "/hpc/scratch/danilo.tatoni/Neoepi_output/log/annotate_variants"
-    bam_cleaning: "/hpc/scratch/danilo.tatoni/Neoepi_output/log/bam_cleaning"
-    bam_readcount: "/hpc/scratch/danilo.tatoni/Neoepi_output/log/bam_readcount"
-    base_recalibration: "/hpc/scratch/danilo.tatoni/Neoepi_output/log/base_recalibration"
-    decompose: "/hpc/scratch/danilo.tatoni/Neoepi_output/log/decompose"
-    t1k: "/hpc/scratch/danilo.tatoni/Neoepi_output/log/t1k"
-    arcasHLA: "/hpc/scratch/danilo.tatoni/Neoepi_output/log/arcasHLA"
-    star_idx:  "/hpc/scratch/danilo.tatoni/Neoepi_output/log/star_idx"
-    pvacseq: "/hpc/scratch/danilo.tatoni/Neoepi_output/log/pvacseq"
-    salmon_quant: "/hpc/scratch/danilo.tatoni/Neoepi_output/log/salmon_quant"
-    trimming: "/hpc/scratch/danilo.tatoni/Neoepi_output/log/trimming"
-    ref_transcript_mismatch_reporter: "/hpc/scratch/danilo.tatoni/Neoepi_output/log/ref_transcript_mismatch_reporter"
-    snv_calling: "/hpc/scratch/danilo.tatoni/Neoepi_output/log/snv_calling"
-    sort_bam: "/hpc/scratch/danilo.tatoni/Neoepi_output/log/sort_bam"
-    vatools: "/hpc/scratch/danilo.tatoni/Neoepi_output/log/vatools"
-    vcf_expression_annotator: "/hpc/scratch/danilo.tatoni/Neoepi_output/log/vcf_expression_annotator"
-    vcf_readcount_annotator_indel: "/hpc/scratch/danilo.tatoni/Neoepi_output/log/vcf_readcount_annotator_indel"
-    vcf_readcount_annotator_snp: "/hpc/scratch/danilo.tatoni/Neoepi_output/log/vcf_readcount_annotator_snp"
+    align: "log/align"
+    annotate_variants: "log/annotate_variants"
+    bam_cleaning: "log/bam_cleaning"
+    bam_readcount: "log/bam_readcount"
+    base_recalibration: "log/base_recalibration"
+    decompose: "log/decompose"
+    t1k: "log/t1k"
+    arcasHLA: "log/arcasHLA"
+    star_idx:  "log/star_idx"
+    pvacseq: "log/pvacseq"
+    salmon_quant: "log/salmon_quant"
+    trimming: "log/trimming"
+    ref_transcript_mismatch_reporter: "log/ref_transcript_mismatch_reporter"
+    snv_calling: "log/snv_calling"
+    sort_bam: "log/sort_bam"
+    vatools: "log/vatools"
+    vcf_expression_annotator: "log/vcf_expression_annotator"
+    vcf_readcount_annotator_indel: "log/vcf_readcount_annotator_indel"
+    vcf_readcount_annotator_snp: "log/vcf_readcount_annotator_snp"
 
 # -- RESOURCES -- #
+# Despite the possibility to put all of them inside a single folder, the choice to write them down 
+# explicitely is intentional. That's because a bioinformatic research group could already have many 
+# of these files on their server in different locations, so it's useless to move them in a single 
+# folder breaking existing practices e/o workflows.
+
 resources:
   genome: "/hpc/scratch/danilo.tatoni/Exomes/VCF_resources/Homo_sapiens.GRCh38.dna.primary_assembly.fa"
   transcriptome: "/hpc/scratch/danilo.tatoni/genomes_and_indexes/Homo_sapiens.GRCh38.cdna.all.fa"

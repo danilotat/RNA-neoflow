@@ -3,19 +3,19 @@ rule align:
         unpack(get_fastq),
         index = config["resources"]["star_index"]
     output:
-        temp(config["datadirs"]["mapped_reads"] + "/" + "{patient}_Aligned.sortedByCoord.out.bam")
+        temp(config['OUTPUT_FOLDER'] + config["datadirs"]["mapped_reads"] + "/" + "{patient}_Aligned.sortedByCoord.out.bam")
         # temp(dir(config["datadirs"]["mapped_reads"] + "/" + "{patient}__STARgenome")),
         # temp(dir(config["datadirs"]["mapped_reads"] + "/" + "{patient}__STARpass1"))
     conda:
         "../envs/star.yml"
     params:
         index = lambda wc, input: input.index,
-        prefix = config["datadirs"]["mapped_reads"] + '/{patient}_',
+        prefix = config['OUTPUT_FOLDER'] + config["datadirs"]["mapped_reads"] + '/{patient}_',
         extra = "--sjdbGTFfile {} {}".format(config["resources"]["gtf"], config["params"]["star"])
     threads:
         config["params"]["threads"]["STAR"]
     log:
-        config["datadirs"]["logs"]["align"] + "/" + "{patient}.log"
+        config['OUTPUT_FOLDER'] + config["datadirs"]["logs"]["align"] + "/" + "{patient}.log"
     shell:
         '''
         STAR --readFilesIn {input.r1} {input.r2} \
