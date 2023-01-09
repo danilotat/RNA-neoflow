@@ -79,6 +79,8 @@ params:
     arcasHLA: 2
     mark_duplicates: 4
     BQSR: 4
+    strelka2: 8
+    pvacseq: 2
   RAM:
     gatk: 10
     mark_duplicates: 30000
@@ -93,10 +95,6 @@ params:
   RGPU: unit1
   RGSM: 20
   mutect2: "--max-mnp-distance 0 --min-base-quality-score 20 --dont-use-soft-clipped-bases"
-  strelka2:
-    threads: 10
-  HaplotypeCaller: 
-    threshold: 20
   FilterMutectCalls: "--max-events-in-region 4 --unique-alt-read-count 4 --min-allele-fraction 0.001"
   VariantFiltration:
     window: 35
@@ -135,7 +133,6 @@ params:
     trna_vaf: ""
     expn_val: ""
     max_transcript_support_level: ""
-    #hla_alleles: "HLA-A*11:303"
     e1: "8,9,10,11"
     mhc_tools: "MHCnuggetsI NNalign NetMHC NetMHCpan PickPocket SMM SMMPMBEC SMMalign"
     #mhc_tools: "MHCflurry MHCnuggetsI NNalign NetMHC PickPocket SMM SMMPMBEC SMMalign"

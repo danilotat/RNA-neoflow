@@ -22,10 +22,10 @@ logpath.mkdir(parents=True, exist_ok=True)
 bam_final_path = config["datadirs"]["BQSR_2"]
 ref_fasta = config["resources"]["genome"]
 ref_dict = ref_fasta.replace('.fa', '.dict')
-HLA_path = config["datadirs"]["HLA_typing"]
-intervals_path = os.path.join(config["datadirs"]["utils"], "interval-files")
-vcfs_somatic_path = config["datadirs"]["VCF"]
-vcfs_germline_path = config['datadirs']['VCF_germ']
+HLA_path = config["OUTPUT_FOLDER"] + config["datadirs"]["HLA_typing"]
+intervals_path = os.path.join(config["OUTPUT_FOLDER"] + config["datadirs"]["utils"], "interval-files")
+vcfs_somatic_path = config["OUTPUT_FOLDER"] + config["datadirs"]["VCF"]
+vcfs_germline_path = config["OUTPUT_FOLDER"] + config['datadirs']['VCF_germ']
 
 num_workers = 20
 

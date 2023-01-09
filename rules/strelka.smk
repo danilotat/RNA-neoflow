@@ -1,6 +1,6 @@
 rule Strelka_prep:
     input:
-        bam=config["datadirs"]["BQSR_2"]+'/'+'{patient}_recal.pass2.bam'
+        bam=config["OUTPUT_FOLDER"] + config["datadirs"]["BQSR_2"]+'/'+'{patient}_recal.pass2.bam'
     output:
         config["OUTPUT_FOLDER"] + config["datadirs"]['VCF_out']+'/'+'{patient}_workflow'+'/'+'runWorkflow.py'
     params:
@@ -25,7 +25,7 @@ rule Strelka2:
     output:
         config["OUTPUT_FOLDER"] + config["datadirs"]['VCF_out']+'/'+'{patient}_workflow'+'/results/variants/'+'variants.vcf.gz'
     params:
-        threads=config['params']['strelka2']['threads']
+        threads=config['params']['threads']['strelka2']
     conda:
         "../envs/strelka2.yml"
     shell:

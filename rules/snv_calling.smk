@@ -150,9 +150,9 @@ rule tabix_DP:
 rule select_calls:
     input:
         mutect2=config["OUTPUT_FOLDER"] + config["datadirs"]["VCF"] + "/" + "{patient}.filtered_by_DP.vcf.gz",
-        strelka2=config["OUTPUT_FOLDER"] + config["OUTPUT_FOLDER"] + config["datadirs"]['VCF_out']+'/'+'{patient}_workflow'+'/results/variants/'+'variants.vcf.gz'
+        strelka2=config["OUTPUT_FOLDER"] + config["datadirs"]['VCF_out']+'/'+'{patient}_workflow'+'/results/variants/'+'variants.vcf.gz'
     output:
-        overlap_vcf=config["OUTPUT_FOLDER"] + config["OUTPUT_FOLDER"] + config["datadirs"]['VCF_out']+'/'+'{patient}_overlap.vcf.gz'
+        overlap_vcf=config["OUTPUT_FOLDER"] + config["datadirs"]['VCF_out']+'/'+'{patient}_overlap.vcf.gz'
     conda:
         "../envs/cyvcf2.yml"
     shell:
@@ -162,13 +162,14 @@ rule select_calls:
 
 rule tabix_overlap:
     input:
-        vcf_in = config["OUTPUT_FOLDER"] + config["datadirs"]["VCF_out"] + "/" + "{patient}_overlap.vcf.gz"
+        vcf_in=config["OUTPUT_FOLDER"] + config["datadirs"]["VCF_out"] + "/" + "{patient}_overlap.vcf.gz"
     output:
-        tabix_out = config["OUTPUT_FOLDER"] + config["datadirs"]["VCF_out"] + "/" + "{patient}_overlap.vcf.gz.tbi"
+        tabix_out=config["OUTPUT_FOLDER"] + config["datadirs"]["VCF_out"] + "/" + "{patient}_overlap.vcf.gz.tbi"
     conda:
         "../envs/tabix.yml"
     shell:
         """
         tabix -p vcf {input.vcf_in}
+        """
 
 

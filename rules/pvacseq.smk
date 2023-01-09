@@ -1,15 +1,12 @@
 rule pvacseq:
     input:
         vcf=config["OUTPUT_FOLDER"] + config["datadirs"]["VCF_out"] + "/" + "{patient}_ref_transcript_mismatch_reporter_filtered.vcf.gz"
-        # phaseVCF = config["OUTPUT_FOLDER"] + config["datadirs"]["VCF_out"]+"/"+"{patient}_annotated_phased.vcf.gz"
     params:
         samp_name = "{patient}",
-        #hla_alleles = open(config["OUTPUT_FOLDER"] + config["datadirs"]["HLA_typing"]+'/'+'{wildcards.patient}_output/allele_input_pvacseq.csv', 'r').readline() ,
         hla_genotype=read_hla,
-        #hla_alleles = '$(cat ' + config["OUTPUT_FOLDER"] + config["datadirs"]["HLA_typing"] + '/' + '{patient}_output' + '/' + 'allele_input_pvacseq.csv' + ')',
         e1 = config["params"]["pvacseq"]["e1"],
         mhc_tools = config["params"]["pvacseq"]["mhc_tools"],
-        cores = config["params"]["pvacseq"]["t"],
+        cores = config["params"]["threads"]["pvacseq"],
         out_dir = config["OUTPUT_FOLDER"] + config["datadirs"]["pvacseq_out"],
         iedb_dir = config["resources"]["iedb_dir"]  
     output:

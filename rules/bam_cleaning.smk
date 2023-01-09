@@ -107,7 +107,7 @@ rule splitNcigar:
     input:
         bai=config['OUTPUT_FOLDER'] + config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.md.sorted.bam.bai",
         bam=config['OUTPUT_FOLDER'] + config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.md.sorted.bam",
-        intervals=config["datadirs"]["utils"]+"/"+"coding.interval_list",
+        intervals=config['OUTPUT_FOLDER'] + config["datadirs"]["utils"]+"/"+"coding.interval_list",
         fasta=config["resources"]["genome"]
     output:
         sbam=temp(config['OUTPUT_FOLDER'] + config["datadirs"]["bams"]+"/"+"{patient}_split.out.bam")

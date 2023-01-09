@@ -3,7 +3,7 @@
 rule genotype:
     input:
         unpack(get_fastq),
-        idx=config["datadirs"]["utils"]+"/"+"hlaidx_rna_seq.fa"
+        idx="../supplementary_res/hlaidx_rna_seq.fa"
     output:
         temp(config["OUTPUT_FOLDER"] + config["datadirs"]['HLA_typing']+'/'+'{patient}_aligned_1.fa'),
         temp(config["OUTPUT_FOLDER"] + config["datadirs"]['HLA_typing']+'/'+'{patient}_aligned_2.fa'),
@@ -18,7 +18,7 @@ rule genotype:
     conda:
         "../envs/t1k.yml"
     threads: config['params']['threads']['t1k']
-    log: config["OUTPUT_FOLDER"] + config["datadirs"]['logs']['t1k']
+    log: config["OUTPUT_FOLDER"] + config["datadirs"]['logs']['t1k'] + "/{patient}.log"
     shell:
         """
         run-t1k -1 {input.r1} -2 {input.r2} --preset hla \

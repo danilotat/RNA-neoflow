@@ -30,9 +30,7 @@ include:
 
 rule targets:
     input:        
-        #expand(config["datadirs"]["VCF_out"] + "/" + "{patient}_ref_transcript_mismatch_reporter_filtered.vcf.gz", patient=patients),
-        #expand(config["datadirs"]["VCF_out"]+"/"+"{patient}_vcf_readcount_annotator_FINAL.vcf", patient=patients)
-        expand(config["datadirs"]["VCF_out"] + "/" + "{patient}_ref_transcript_mismatch_reporter.vcf.gz.tbi", patient=patients)
+        expand(config["OUTPUT_FOLDER"] + config["datadirs"]["VCF_out"] + "/" + "{patient}_ref_transcript_mismatch_reporter.vcf.gz.tbi", patient=patients)
         
 include:
     "rules/alignment.smk"
