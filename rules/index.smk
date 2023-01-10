@@ -21,7 +21,7 @@ rule salmon_gentrome:
     output:
         temp(config['resources'] + '/' + 'gentrome.fa.gz')
     shell:
-        "cat {input.genome} {input.cdna} > {output}"
+        "cat {input.genome} {input.cdna} | gzip > {output}"
 
 
 rule salmon_idx:

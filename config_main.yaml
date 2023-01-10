@@ -73,10 +73,9 @@ resources:
 # moved from a tool centered to a resource type one 
 params:
   threads:
-    STAR: 16
+    STAR: 4
     t1k: 8
     salmon: 8
-    arcasHLA: 2
     mark_duplicates: 4
     BQSR: 4
     strelka2: 8
