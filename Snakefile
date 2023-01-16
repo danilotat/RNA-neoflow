@@ -30,7 +30,8 @@ include:
 
 rule targets:
     input:        
-        expand(config["OUTPUT_FOLDER"] + config["datadirs"]["VCF_out"] + "/" + "{patient}_ref_transcript_mismatch_reporter.vcf.gz.tbi", patient=patients)
+        expand(config["OUTPUT_FOLDER"] + config["datadirs"]["VCF_out"] + "/" + "{patient}_ref_transcript_mismatch_reporter.vcf.gz.tbi", patient=patients),
+        expand(config["OUTPUT_FOLDER"] + config["datadirs"]['HLA_typing']+'/'+'{patient}_allele_input_pvacseq.csv', patient=patients)
         
 include:
     "rules/alignment.smk"
