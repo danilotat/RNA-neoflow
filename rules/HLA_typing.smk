@@ -33,5 +33,5 @@ rule extract_hla:
     output:
         config["OUTPUT_FOLDER"] + config["datadirs"]['HLA_typing']+'/'+'{patient}_allele_input_pvacseq.csv'
     shell:
-        "python3 ../scripts/HLA_typing {input} > {output}"
+        "python3 scripts/HLA_typing.py {input} > {output}"
 
