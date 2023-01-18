@@ -12,4 +12,4 @@ with open(sys.argv[1], 'r') as hla_input:
                 HLAs.append(line.split('\t')[5].split(':')[:-1])
             else:
                 HLAs.append(line.split('\t')[2].split(':')[:-1])
-print(','.join(HLAs))
+print(','.join([x for x in HLAs]))
