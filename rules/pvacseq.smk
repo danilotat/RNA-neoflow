@@ -3,7 +3,7 @@ rule pvacseq:
         vcf=config["OUTPUT_FOLDER"] + config["datadirs"]["VCF_out"] + "/" + "{patient}_ref_transcript_mismatch_reporter_filtered.vcf.gz"
     params:
         samp_name = "{patient}",
-        hla_genotype=read_hla,
+        hla_genotype = read_hla,
         e1 = config["params"]["pvacseq"]["e1"],
         mhc_tools = config["params"]["pvacseq"]["mhc_tools"],
         cores = config["params"]["threads"]["pvacseq"],

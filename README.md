@@ -4,15 +4,25 @@ The pipeline is designed to be executed both on a HPC cluster or a standalone se
 
 ## Sources for the required files
 
-TODO
+This pipeline uses the common VCF germline references reported by the GATK Best practices. All the files could be accessed from https://console.cloud.google.com/storage/browser/genomics-public-data/resources/broad/hg38/v0
+
+A distributed list of up-to-date references will be soon available.
 
 ### Using the same annotation in every files
+
+Ensembl annotation is used consistently throughout the workflow. Files downloaded from the GATK Bucket don't match Ensembl chromosomes nomenclature. To convert scaffolds name download the conversion table from https://github.com/dpryan79/ChromosomeMappings and then use 
+
+```
+bcftools annotate -rename--chrs conv_table.txt original.vcf.gz | bgzip > renamed.vcf.gz 
+```
+
+As explained [here](https://www.biostars.org/p/98582/)
 
 ## Run on Cluster HPC
 
 The pipeline was developed and tested on a HPC cluster which uses the Slurm scheduler. If your HPC is using another scheduler, these options may not work as expected.
 
-Inside the `cluster_config.json` add your **account_name** and desired **partition** where the job will be executed inside the `__default__` definition. 
+In `cluster_config.json` populate the `__default__` definition with your **account_name** and desired **partition** where the job will be executed. 
 
 ```json
 "__default__":
