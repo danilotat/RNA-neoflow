@@ -11,9 +11,9 @@ rule align:
     params:
         index = lambda wc, input: input.index,
         prefix = config['OUTPUT_FOLDER'] + config["datadirs"]["mapped_reads"] + '/{patient}_',
-        extra = "--sjdbGTFfile {} {}".format(config["resources"]["gtf"], config["params"]["star"])
+        extra = "--sjdbGTFfile {} {}".format(config["resources"]["gtf"], config["params"]["STAR"]["extra"])
     threads:
-        config["params"]["threads"]["STAR"]
+        config["params"]["STAR"]["threads"]
     log:
         config['OUTPUT_FOLDER'] + config["datadirs"]["logs"]["align"] + "/" + "{patient}.log"
     shell:

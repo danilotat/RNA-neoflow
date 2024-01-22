@@ -17,7 +17,6 @@ rule AddGrp:
         """
         gatk AddOrReplaceReadGroups  -I {input.bam} -O {output.rg} {params.extra} --RGPU {params.RGPU} --RGSM {params.RGSM}
         """
-
 rule bed_to_intervals:
     input:
         bed=config["resources"]["intervals_coding"],
@@ -31,23 +30,39 @@ rule bed_to_intervals:
         gatk BedToIntervalList -I {input.bed} -SD {input.fasta_dict} -O {output.intervals}
         """
 
-rule split_intervals:
-    input:
-        ref=ref_fasta,
-        intervals=config['OUTPUT_FOLDER'] + config["datadirs"]["utils"]+"/"+"coding.interval_list"
-    output:
-        interval_files
-    params:
-        N=num_workers,
-        d=config['OUTPUT_FOLDER'] + config["datadirs"]["utils"]+'/'+"interval-files"
-    conda:
-        "../envs/gatk.yml"
-    shell:
-        """
-        gatk SplitIntervals -R {input.ref} -L {input.intervals} \
-            --scatter-count {params.N} -O {params.d} \
-            --subdivision-mode BALANCING_WITHOUT_INTERVAL_SUBDIVISION
-        """
+########## -- OLD RULES ?? -- ##########################################
+# rule bed_to_intervals:
+#     input:
+#         bed=config["resources"]["intervals_coding"],
+#         fasta_dict=ref_dict
+#     output:
+#         intervals=config['OUTPUT_FOLDER'] + config["datadirs"]["utils"]+"/"+"coding.interval_list"
+#     conda:
+#         "../envs/gatk.yml"
+#     shell:
+#         """
+#         gatk BedToIntervalList -I {input.bed} -SD {input.fasta_dict} -O {output.intervals}
+#         """
+
+# rule split_intervals:
+#     input:
+#         ref=ref_fasta,
+#         intervals=config['OUTPUT_FOLDER'] + config["datadirs"]["utils"]+"/"+"coding.interval_list"
+#     output:
+#         interval_files
+#     params:
+#         N=num_workers,
+#         d=config['OUTPUT_FOLDER'] + config["datadirs"]["utils"]+'/'+"interval-files"
+#     conda:
+#         "../envs/gatk.yml"
+#     shell:
+#         """
+#         gatk SplitIntervals -R {input.ref} -L {input.intervals} \
+#             --scatter-count {params.N} -O {params.d} \
+#             --subdivision-mode BALANCING_WITHOUT_INTERVAL_SUBDIVISION
+#         """
+##############################################################################
+##############################################################################
 
 
 rule mark_duplicates:
@@ -57,14 +72,14 @@ rule mark_duplicates:
         bam=temp(config['OUTPUT_FOLDER'] + config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.md.bam"),
         metrics=temp(config['OUTPUT_FOLDER'] + config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.metrics.txt")
     params:
-        hard_ram=config["params"]["RAM"]["gatk"],
+        hard_ram=config["params"]["gatk"]["RAM"],
         temporary_dir=config["TEMP_DIR"]
     conda:
         "../envs/gatk.yml"
     threads:
-        config["params"]["threads"]["mark_duplicates"]
+        config["params"]["MarkDuplicates"]["threads"]
     resources: 
-        mem_mb=config["params"]["RAM"]["mark_duplicates"]
+        mem_mb=config["params"]["MarkDuplicates"]["RAM"]
     log:
         config['OUTPUT_FOLDER'] + config["datadirs"]["logs"]["bam_cleaning"] + "/" + "{patient}.log"
     shell:
@@ -103,21 +118,24 @@ rule samtools_index:
         samtools index {input.bam} {output.bai} 
         """
 
-rule splitNcigar:
+rule SplitNCigarReads:
     input:
         bai=config['OUTPUT_FOLDER'] + config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.md.sorted.bam.bai",
         bam=config['OUTPUT_FOLDER'] + config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.md.sorted.bam",
+        ########### ----
+        #TODO: fix this!!!
+        ########### -----
         intervals=config['OUTPUT_FOLDER'] + config["datadirs"]["utils"]+"/"+"coding.interval_list",
         fasta=config["resources"]["genome"]
     output:
         sbam=temp(config['OUTPUT_FOLDER'] + config["datadirs"]["bams"]+"/"+"{patient}_split.out.bam")
     params:
         temporary_dir=config["TEMP_DIR"],
-    threads: 4
+    threads: config["params"]["SplitNCigarReads"]["threads"]
     conda:
         "../envs/gatk.yml"
     resources:
-        mem_mb=config["params"]["RAM"]["splitNcigar"]
+        mem_mb=config["params"]["SplitNCigarReads"]["RAM"]
     log:
         config['OUTPUT_FOLDER'] + config["datadirs"]["logs"]["bam_cleaning"] + "/" + "{patient}.log"
     shell:

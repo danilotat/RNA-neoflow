@@ -11,6 +11,8 @@ configfile: "config_main.yaml"
 # Note that this dataframe is accessed every time to determine the wildcards used
 # at each step of the analysis while needed.
 
+configpath = "config_main.yaml"
+
 patients = pd.read_csv("patients.csv")["patient"]
 units = pd.read_csv("units.csv").set_index(["patient"], drop=False)
 units = units.sort_index()
@@ -19,7 +21,7 @@ slurm_logdir = config['slurm_log_dir']
 logpath = Path(slurm_logdir)
 logpath.mkdir(parents=True, exist_ok=True)
 
-bam_final_path = config["datadirs"]["BQSR_2"]
+bam_final_path = config["datadirs"]["BQSR"]
 ref_fasta = config["resources"]["genome"]
 ref_dict = ref_fasta.replace('.fa', '.dict')
 HLA_path = config["OUTPUT_FOLDER"] + config["datadirs"]["HLA_typing"]
@@ -51,7 +53,7 @@ def get_bam(wildcards):
     """
     Return list of bam files for rule bam_readcount
     """
-    return [f"{bam_final_path}/{wildcards.patient}_recal.pass2.bam"]
+    return [f"{bam_final_path}/{wildcards.patient}_recal.bam"]
 
 def get_intervals():
     ints = []
@@ -112,8 +114,6 @@ def read_hla(wildcards):
     except FileNotFoundError:
         hla_genotype="HLA-A*11:303"
     return hla_genotype
-
-
 
 def sample_from_patient(df, patient_list, condition):
     samples = []

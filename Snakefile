@@ -29,9 +29,11 @@ include:
     "rules/common.smk"
 
 rule targets:
-    input:        
-        expand(config["OUTPUT_FOLDER"] + config["datadirs"]["VCF_out"] + "/" + "{patient}_ref_transcript_mismatch_reporter.vcf.gz.tbi", patient=patients),
-        expand(config["OUTPUT_FOLDER"] + config["datadirs"]['HLA_typing']+'/'+'{patient}_allele_input_pvacseq.csv', patient=patients)
+    input:
+        expand(config["OUTPUT_FOLDER"] + config["datadirs"]["VCF_out"] + '/' + '{patient}_annot_germProb.vcf.gz.tbi', patient=patients)
+        # expand(config["OUTPUT_FOLDER"] + config["datadirs"]["BAM"] + "/" + "{patient}_sorted.bam", patient=patients),        
+        # expand(config["OUTPUT_FOLDER"] + config["datadirs"]["VCF_out"] + "/" + "{patient}_ref_transcript_mismatch_reporter.vcf.gz.tbi", patient=patients),
+        # expand(config["OUTPUT_FOLDER"] + config["datadirs"]['HLA_typing']+'/'+'{patient}_allele_input_pvacseq.csv', patient=patients)
         
 include:
     "rules/alignment.smk"
@@ -46,22 +48,22 @@ include:
 include:
     "rules/strelka.smk"
 include:
-    "rules/snv_calling.smk"
-include:
-    "rules/vatools.smk"
-include:
-    "rules/annotate_variants.smk"
-include:
-    "rules/decompose.smk"
-include:
-    "rules/bam_readcount.smk"
-include:
-    "rules/vcf_readcount_annotator_snp.smk"
-include:
-    "rules/vcf_readcount_annotator_indel.smk"
-include:
-    "rules/vcf_expression_annotator.smk"
-include:
-    "rules/ref_transcript_mismatch_reporter.smk"
-include:
-    "rules/pvacseq.smk"
+    "rules/filter_calls.smk"
+# include:
+#     "rules/vatools.smk"
+# include:
+#     "rules/annotate_variants.smk"
+# include:
+#     "rules/decompose.smk"
+# include:
+#     "rules/bam_readcount.smk"
+# include:
+#     "rules/vcf_readcount_annotator_snp.smk"
+# include:
+#     "rules/vcf_readcount_annotator_indel.smk"
+# include:
+#     "rules/vcf_expression_annotator.smk"
+# include:
+#     "rules/ref_transcript_mismatch_reporter.smk"
+# include:
+#     "rules/pvacseq.smk"

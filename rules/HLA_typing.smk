@@ -17,16 +17,14 @@ rule genotype:
         outdir=config["OUTPUT_FOLDER"] + config["datadirs"]['HLA_typing']
     conda:
         "../envs/t1k.yml"
-    threads: config['params']['threads']['t1k']
+    threads: config['params']['t1k']['threads']
     log: config["OUTPUT_FOLDER"] + config["datadirs"]['logs']['t1k'] + "/{patient}.log"
     shell:
         """
         run-t1k -1 {input.r1} -2 {input.r2} --preset hla \
         -f {input.idx} -t {threads} -o {params.prefix} --od {params.outdir}
         """
-
-
-
+        
 rule extract_hla:
     input:
         config["OUTPUT_FOLDER"] + config["datadirs"]['HLA_typing']+'/'+'{patient}_genotype.tsv'

@@ -5,12 +5,12 @@ rule salmon_quantification:
         quant = config['OUTPUT_FOLDER'] + config["datadirs"]["salmon_quant"] + '/' + '{patient}' + '/quant.sf'
     params:
         index = config["resources"]["salmon_idx"],
-        libtype = config["params"]["salmon"]["libtype"],
-        zip_ext = config["params"]["salmon"]["zip_ext"],
-        extra = config["params"]["salmon"]["extra"],
+        libtype = config["params"]["salmon"]["extra"]["libtype"],
+        zip_ext = config["params"]["salmon"]["extra"]["zip_ext"],
+        extra = config["params"]["salmon"]["extra"]["extra"],
         outdir = config['OUTPUT_FOLDER'] + config["datadirs"]["salmon_quant"] + '/' + '{patient}'
     threads: 
-        config["params"]["threads"]["salmon"]
+        config["params"]["salmon"]["threads"]
     conda:
         "../envs/salmon_new.yml"
     log:

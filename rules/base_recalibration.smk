@@ -6,11 +6,11 @@ rule BQSR_1:
         DbSNP=config["resources"]["dbsnps"],
         fasta=config["resources"]["genome"]
     output:
-        recall=temp(config['OUTPUT_FOLDER'] + config["datadirs"]["bams"] + "/" + "{patient}_recal.table")
+        recall=config['OUTPUT_FOLDER'] + config["datadirs"]["bams"] + "/" + "{patient}_recal.table"
     resources:
-        mem_mb=config["params"]["RAM"]["BQSR"]
+        mem_mb=config["params"]["BQSR"]["RAM"]
     threads: 
-        config["params"]["threads"]["BQSR"]
+        config["params"]["BQSR"]["threads"]
     conda:
         "../envs/gatk.yml"
     log:
@@ -32,13 +32,13 @@ rule applyBQSR:
         fasta=config["resources"]["genome"],
         recall=config['OUTPUT_FOLDER'] + config["datadirs"]["bams"] + "/" + "{patient}_recal.table"
     output:
-        rbam=temp(config['OUTPUT_FOLDER'] + config["datadirs"]["bams"]+'/'+"{patient}_recal.pass1.bam")
+        rbam=config['OUTPUT_FOLDER'] + config["datadirs"]["BQSR"]+'/'+"{patient}_recal.bam"
     threads: 
-        config["params"]["threads"]["BQSR"]
+        config["params"]["BQSR"]["threads"]
     conda:
         "../envs/gatk.yml"
     resources:
-        mem_mb=config["params"]["RAM"]["BQSR"]
+        mem_mb=config["params"]["BQSR"]["RAM"]
     log:
         config['OUTPUT_FOLDER'] + config["datadirs"]["logs"]["base_recalibration"] + "/" + "{patient}.log"
     shell:
@@ -49,55 +49,59 @@ rule applyBQSR:
         --bqsr-recal-file {input.recall} \
         -O {output.rbam}
         """
-rule BQSR_Pass2:         
-    input:
-        bam=config["OUTPUT_FOLDER"] + config["datadirs"]['bams'] + "/" + "{patient}_recal.pass1.bam",
-        GSNPs=config["resources"]["gsnps"],
-        indel=config["resources"]["indel"],
-        DbSNP=config["resources"]["dbsnps"],
-        fasta=config["resources"]["genome"]
-    output:
-        recall=temp(config["OUTPUT_FOLDER"] + config["datadirs"]['bams'] + "/" + "{patient}_recal_2.table")
-    threads: 
-        config["params"]["threads"]["BQSR"]
-    conda:
-        "../envs/gatk.yml"
-    resources:
-        mem_mb=config["params"]["RAM"]["BQSR"]
-    log:
-        config['OUTPUT_FOLDER'] + config["datadirs"]["logs"]["base_recalibration"] + "/" + "{patient}.log"
-    shell:
-        """
-        gatk BaseRecalibrator \
-        -I {input.bam} \
-        -R {input.fasta} \
-        --known-sites  {input.GSNPs} \
-        --known-sites  {input.indel}  \
-        --known-sites  {input.DbSNP} \
-        -O {output.recall}
-        """ 
 
-rule ApplyBQSR_2:
-    # this is latest edited bam file, so we decide to keep it for further checks. 
-    input:
-        bam=config["OUTPUT_FOLDER"] + config["datadirs"]['bams'] + "/" + "{patient}_recal.pass1.bam",
-        fasta=config["resources"]["genome"],
-        recall=config["OUTPUT_FOLDER"] + config["datadirs"]['bams'] + "/" + "{patient}_recal_2.table"
-    output:
-        rbam=config["OUTPUT_FOLDER"] + config["datadirs"]['BQSR_2'] + "/" + "{patient}_recal.pass2.bam"
-    threads: 
-        config["params"]["threads"]["BQSR"]
-    conda:
-        "../envs/gatk.yml"
-    resources:
-        mem_mb=config["params"]["RAM"]["BQSR"]
-    log:
-        config['OUTPUT_FOLDER'] + config["datadirs"]["logs"]["base_recalibration"] + "/" + "{patient}.log"
-    shell:
-        """
-        gatk ApplyBQSR \
-        -I {input.bam}  \
-        -R {input.fasta} \
-        --bqsr-recal-file {input.recall} \
-        -O {output.rbam}
-        """
+### --- DO WE NEED 2 STEP OF BQSR ?? --- ### 
+
+
+# rule BQSR_Pass2:         
+#     input:
+#         bam=config["OUTPUT_FOLDER"] + config["datadirs"]['bams'] + "/" + "{patient}_recal.pass1.bam",
+#         GSNPs=config["resources"]["gsnps"],
+#         indel=config["resources"]["indel"],
+#         DbSNP=config["resources"]["dbsnps"],
+#         fasta=config["resources"]["genome"]
+#     output:
+#         recall=temp(config["OUTPUT_FOLDER"] + config["datadirs"]['bams'] + "/" + "{patient}_recal_2.table")
+#     threads: 
+#         config["params"]["BQSR"]["threads"]
+#     conda:
+#         "../envs/gatk.yml"
+#     resources:
+#         mem_mb=config["params"]["BQSR"]["RAM"]
+#     log:
+#         config['OUTPUT_FOLDER'] + config["datadirs"]["logs"]["base_recalibration"] + "/" + "{patient}.log"
+#     shell:
+#         """
+#         gatk BaseRecalibrator \
+#         -I {input.bam} \
+#         -R {input.fasta} \
+#         --known-sites  {input.GSNPs} \
+#         --known-sites  {input.indel}  \
+#         --known-sites  {input.DbSNP} \
+#         -O {output.recall}
+#         """ 
+
+# rule ApplyBQSR_2:
+#     # this is latest edited bam file, so we decide to keep it for further checks. 
+#     input:
+#         bam=config["OUTPUT_FOLDER"] + config["datadirs"]['bams'] + "/" + "{patient}_recal.pass1.bam",
+#         fasta=config["resources"]["genome"],
+#         recall=config["OUTPUT_FOLDER"] + config["datadirs"]['bams'] + "/" + "{patient}_recal_2.table"
+#     output:
+#         rbam=config["OUTPUT_FOLDER"] + config["datadirs"]['BQSR_2'] + "/" + "{patient}_recal.pass2.bam"
+#     threads: 
+#         config["params"]["BQSR"]["threads"]
+#     conda:
+#         "../envs/gatk.yml"
+#     resources:
+#         mem_mb=config["params"]["BQSR"]["RAM"]
+#     log:
+#         config['OUTPUT_FOLDER'] + config["datadirs"]["logs"]["base_recalibration"] + "/" + "{patient}.log"
+#     shell:
+#         """
+#         gatk ApplyBQSR \
+#         -I {input.bam}  \
+#         -R {input.fasta} \
+#         --bqsr-recal-file {input.recall} \
+#         -O {output.rbam}
+#         """
