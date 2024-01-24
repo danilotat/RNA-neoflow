@@ -1,6 +1,5 @@
 import cyvcf2
 import numpy as np
-import pandas as pd
 import scipy.stats as stats
 import sys
 
