@@ -3,7 +3,7 @@
 rule genotype:
     input:
         unpack(get_fastq),
-        idx="../supplementary_res/hlaidx_rna_seq.fa"
+        idx=config["resources"]["t1k_file"]
     output:
         temp(config["OUTPUT_FOLDER"] + config["datadirs"]['HLA_typing']+'/'+'{patient}_aligned_1.fa'),
         temp(config["OUTPUT_FOLDER"] + config["datadirs"]['HLA_typing']+'/'+'{patient}_aligned_2.fa'),

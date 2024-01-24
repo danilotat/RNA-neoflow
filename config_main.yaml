@@ -1,12 +1,12 @@
 # Adjust parameter for custom analysis
 
 # -- Temp directory for gatk -- #
-TEMP_DIR: "/../temp_gatk"
+TEMP_DIR: "/g100_scratch/userexternal/dtatoni0/Gartner/temp_gatk"
 slurm_log_dir: slurm-logs
 
 # -- Base paths -- #
 
-OUTPUT_FOLDER : "/../Neoepi_output/"
+OUTPUT_FOLDER : "/g100_scratch/userexternal/dtatoni0/Gartner/ENEO_output/"
 
 # -- Relative paths to concatenate -- #
 # -- OUTPUT STRUCTURE -- #
@@ -73,6 +73,7 @@ resources:
   intervals_coding: "/g100_work/IscrC_ENEO2/repos/RNA-neoflow/supplementary_res/intervals_coding_clean.BED.gz"
   vcfanno_binary: "/g100_work/IscrC_ENEO2/repos/RNA-neoflow/utils/vcfanno_linux64"
   vcfanno_toml: "/g100_work/IscrC_ENEO2/repos/RNA-neoflow/utils/vcfanno.toml"
+  t1k_file: "/g100_work/IscrC_ENEO2/repos/RNA-neoflow/supplementary_res/hlaidx_rna_seq.fa"
   ######################################################################
   ### ---- OLD STUFF: REMOVE WHILE WORKING WITH --- ##
   # gsnps: "/../../VCF_resources/1000G_phase1.snps.high_confidence.hg38.vcf.gz"

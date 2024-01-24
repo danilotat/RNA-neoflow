@@ -16,8 +16,8 @@ rule align:
         config["params"]["STAR"]["threads"]
     resources:
         mem = "40G",
-        time = "6:00:00",
-        ncpus = 4
+        time = "10:00:00",
+        ncpus = 8
     log:
         config['OUTPUT_FOLDER'] + config["datadirs"]["logs"]["align"] + "/" + "{patient}.log"
     shell:
