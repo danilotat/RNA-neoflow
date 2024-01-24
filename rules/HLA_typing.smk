@@ -18,6 +18,10 @@ rule genotype:
     conda:
         "../envs/t1k.yml"
     threads: config['params']['t1k']['threads']
+    resources:
+        time="3:00:00",
+        ncpus=4,
+        mem="32G"
     log: config["OUTPUT_FOLDER"] + config["datadirs"]['logs']['t1k'] + "/{patient}.log"
     shell:
         """
@@ -30,6 +34,8 @@ rule extract_hla:
         config["OUTPUT_FOLDER"] + config["datadirs"]['HLA_typing']+'/'+'{patient}_genotype.tsv'
     output:
         config["OUTPUT_FOLDER"] + config["datadirs"]['HLA_typing']+'/'+'{patient}_allele_input_pvacseq.csv'
+    conda:
+        "../envs/cyvcf2.yml"
     shell:
         "python3 scripts/HLA_typing.py {input} > {output}"
 

@@ -11,6 +11,10 @@ rule salmon_quantification:
         outdir = config['OUTPUT_FOLDER'] + config["datadirs"]["salmon_quant"] + '/' + '{patient}'
     threads: 
         config["params"]["salmon"]["threads"]
+    resources:
+        time="1:00:00",
+        ncpus=4,
+        mem="16G"
     conda:
         "../envs/salmon_new.yml"
     log:

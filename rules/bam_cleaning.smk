@@ -11,12 +11,17 @@ rule AddGrp:
         RGPU="{patient}",
         RGSM="{patient}",
         extra="--RGLB rg1 --RGPL illumina"
+    resources:
+        mem="32G",
+        time="4:00:00",
+        ncpus=4
     log:
         config['OUTPUT_FOLDER'] + config["datadirs"]["logs"]["bam_cleaning"] + "/" + "{patient}.log"
     shell:
         """
         gatk AddOrReplaceReadGroups  -I {input.bam} -O {output.rg} {params.extra} --RGPU {params.RGPU} --RGSM {params.RGSM}
         """
+
 rule bed_to_intervals:
     input:
         bed=config["resources"]["intervals_coding"],
@@ -29,20 +34,8 @@ rule bed_to_intervals:
         """
         gatk BedToIntervalList -I {input.bed} -SD {input.fasta_dict} -O {output.intervals}
         """
-
+#########################################################################
 ########## -- OLD RULES ?? -- ##########################################
-# rule bed_to_intervals:
-#     input:
-#         bed=config["resources"]["intervals_coding"],
-#         fasta_dict=ref_dict
-#     output:
-#         intervals=config['OUTPUT_FOLDER'] + config["datadirs"]["utils"]+"/"+"coding.interval_list"
-#     conda:
-#         "../envs/gatk.yml"
-#     shell:
-#         """
-#         gatk BedToIntervalList -I {input.bed} -SD {input.fasta_dict} -O {output.intervals}
-#         """
 
 # rule split_intervals:
 #     input:
@@ -79,7 +72,9 @@ rule mark_duplicates:
     threads:
         config["params"]["MarkDuplicates"]["threads"]
     resources: 
-        mem_mb=config["params"]["MarkDuplicates"]["RAM"]
+        mem="32G",
+        time="4:00:00",
+        ncpus=4
     log:
         config['OUTPUT_FOLDER'] + config["datadirs"]["logs"]["bam_cleaning"] + "/" + "{patient}.log"
     shell:
@@ -120,11 +115,8 @@ rule samtools_index:
 
 rule SplitNCigarReads:
     input:
-        bai=config['OUTPUT_FOLDER'] + config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.md.sorted.bam.bai",
-        bam=config['OUTPUT_FOLDER'] + config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.md.sorted.bam",
-        ########### ----
-        #TODO: fix this!!!
-        ########### -----
+        bai=config['OUTPUT_FOLDER'] + config["datadirs"]["bams"] + "/" +"{patient}_Aligned.sortedByCoord.out.md.sorted.bam.bai",
+        bam=config['OUTPUT_FOLDER'] + config["datadirs"]["bams"] + "/" +"{patient}_Aligned.sortedByCoord.out.md.sorted.bam",
         intervals=config['OUTPUT_FOLDER'] + config["datadirs"]["utils"]+"/"+"coding.interval_list",
         fasta=config["resources"]["genome"]
     output:
@@ -135,7 +127,9 @@ rule SplitNCigarReads:
     conda:
         "../envs/gatk.yml"
     resources:
-        mem_mb=config["params"]["SplitNCigarReads"]["RAM"]
+        mem="32G",
+        time="6:00:00",
+        ncpus=4
     log:
         config['OUTPUT_FOLDER'] + config["datadirs"]["logs"]["bam_cleaning"] + "/" + "{patient}.log"
     shell:

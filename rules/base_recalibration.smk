@@ -8,7 +8,9 @@ rule BQSR_1:
     output:
         recall=config['OUTPUT_FOLDER'] + config["datadirs"]["bams"] + "/" + "{patient}_recal.table"
     resources:
-        mem_mb=config["params"]["BQSR"]["RAM"]
+        time="6:00:00",
+        ncpus=4,
+        mem="32G"
     threads: 
         config["params"]["BQSR"]["threads"]
     conda:
@@ -38,7 +40,9 @@ rule applyBQSR:
     conda:
         "../envs/gatk.yml"
     resources:
-        mem_mb=config["params"]["BQSR"]["RAM"]
+        time="6:00:00",
+        ncpus=4,
+        mem="32G"
     log:
         config['OUTPUT_FOLDER'] + config["datadirs"]["logs"]["base_recalibration"] + "/" + "{patient}.log"
     shell:

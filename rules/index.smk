@@ -10,6 +10,10 @@ rule star_index:
         "../envs/star.yml"
     log:
         config["datadirs"]["logs"]["star_idx"] + '/{patient}.log'
+    resources:
+        mem = "60G",
+        ncpus = 8,
+        time = "6:00:00"
     shell: "STAR --runMode genomeGenerate --runThreadN {threads} --genomeDir {output} \
     --genomeFastaFiles {input.fasta} --sjdbOverhang 100 --sjdbGTFfile {input.gtf}"
 
@@ -34,6 +38,10 @@ rule salmon_idx:
     params:
         outdir=config['resources']['salmon_idx'],
         extra=config['params']['salmon']['index']
+    resources:
+        mem = "40G",
+        ncpus = 8,
+        time = "4:00:00"
     conda:
         "../envs/salmon_new.yml"
     log:

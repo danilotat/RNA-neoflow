@@ -14,6 +14,10 @@ rule align:
         extra = "--sjdbGTFfile {} {}".format(config["resources"]["gtf"], config["params"]["STAR"]["extra"])
     threads:
         config["params"]["STAR"]["threads"]
+    resources:
+        mem = "40G",
+        time = "6:00:00",
+        ncpus = 4
     log:
         config['OUTPUT_FOLDER'] + config["datadirs"]["logs"]["align"] + "/" + "{patient}.log"
     shell:

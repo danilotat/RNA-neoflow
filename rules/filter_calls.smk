@@ -7,9 +7,13 @@ rule filtercalls:
         vcf = config["OUTPUT_FOLDER"] + config["datadirs"]["VCF_out"] + '/' + "{patient}_DP_filt.vcf.gz",
         index = config["OUTPUT_FOLDER"] + config["datadirs"]["VCF_out"] + '/' + "{patient}_DP_filt.vcf.gz.tbi"
     conda:
-        "../envs/bcftools.yml"    
+        "../envs/samtool.yml"    
     threads: 
         config["params"]["samtools"]["threads"]
+    resources:
+        time="0:20:00",
+        ncpus=2,
+        mem="8G"
     shell:
         """
         bcftools view -e "GT='mis'" {input.vcf} |\
@@ -26,6 +30,10 @@ rule createTOML:
         toml_file = config["OUTPUT_FOLDER"] + "vcfanno.toml"
     conda:
         "../envs/cyvcf2.yml"
+    resources:
+        time="0:20:00",
+        ncpus=1,
+        mem="1G"
     shell:
         """
         python3 ../scripts/createTOML.py -y {input.config_main} - t {input.toml_template} -o {output.toml_file}
@@ -43,6 +51,10 @@ rule vcfanno:
         extra = "--permissive-overlap"
     threads:
         config["params"]["vcfanno"]["threads"]
+    resources:
+        time="1:00:00",
+        ncpus=4,
+        mem="16G"
     conda:
         "../envs/samtool.yml"
     shell:
@@ -60,6 +72,10 @@ rule germProb:
         vcf = config["OUTPUT_FOLDER"] + config["datadirs"]["VCF_out"] + '/' + '{patient}_annot_germProb.vcf.gz'
     conda:
         "../envs/cyvcf2.yml"
+    resources:
+        time="0:20:00",
+        ncpus=1,
+        mem="4G"
     shell:
         """
         python3 ../scripts/germProb.py {input.vcf} {output.vcf}
@@ -72,6 +88,10 @@ rule indexgermProb:
         index = config["OUTPUT_FOLDER"] + config["datadirs"]["VCF_out"] + '/' + '{patient}_annot_germProb.vcf.gz.tbi'
     conda:
         "../envs/samtool.yml"
+    resources:
+        time="0:20:00",
+        ncpus=1,
+        mem="4G"
     shell:
         """
         tabix -p vcf {input.vcf}

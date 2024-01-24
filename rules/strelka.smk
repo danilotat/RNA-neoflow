@@ -26,6 +26,10 @@ rule Strelka2:
         config["OUTPUT_FOLDER"] + config["datadirs"]['VCF_out']+'/'+'{patient}_workflow'+'/results/variants/'+'variants.vcf.gz'
     params:
         threads=config['params']['strelka2']['threads']
+    resources:
+        time="2:00:00",
+        ncpus=2,
+        mem="16G"
     conda:
         "../envs/strelka2.yml"
     shell:
