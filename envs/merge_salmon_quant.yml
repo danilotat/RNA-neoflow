@@ -2,7 +2,6 @@ name: merge_salmon_quant
 channels:
   - bioconda
   - conda-forge
-  - defaults
 dependencies:
 - bioconductor-tximeta
 - bioconductor-tximport

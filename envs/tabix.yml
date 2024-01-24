@@ -2,6 +2,5 @@ name: tabix
 channels:
   - bioconda
   - conda-forge
-  - defaults
 dependencies:
   - tabix

@@ -2,7 +2,6 @@ name: strelka2
 channels:
   - bioconda
   - conda-forge
-  - defaults
 dependencies:
   - _libgcc_mutex=0.1=conda_forge
   - _openmp_mutex=4.5=2_gnu
@@ -27,4 +26,3 @@ dependencies:
   - tk=8.6.12=h27826a3_0
   - wheel=0.37.1=pyhd8ed1ab_0
   - zlib=1.2.12=h166bdaf_4
-prefix: /hpc/home/danilo.tatoni/.conda/envs/strelka2

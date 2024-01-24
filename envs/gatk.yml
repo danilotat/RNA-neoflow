@@ -2,7 +2,6 @@ name: gatk4
 channels:
   - bioconda
   - conda-forge
-  - defaults
 dependencies:
   - _libgcc_mutex=0.1=conda_forge
   - _openmp_mutex=4.5=1_gnu
@@ -31,4 +30,3 @@ dependencies:
   - zlib=1.2.11=h36c2ea0_1013
   - pip:
     - setuptools==60.5.0
-prefix: /hpc/home/danilo.tatoni/.conda/envs/gatk4
