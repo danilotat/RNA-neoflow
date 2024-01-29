@@ -1,6 +1,0 @@
-name: tabix
-channels:
-  - bioconda
-  - conda-forge
-dependencies:
-  - tabix
