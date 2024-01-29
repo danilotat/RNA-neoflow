@@ -38,9 +38,9 @@ def main(yaml_file, template_file, output_file):
         elif "cosmic" in field['names'][0]:
             field['file'] = conf_main['resources']['cosmic']
         else:
-            raise ValueError("Unknown field: {}".format(fields['names'][0]))
+            raise ValueError("Unknown field: {}".format(field['names'][0]))
     # write the output file
-    with open(output_file, "wb") as f:
+    with open(output_file, "w") as f:
         toml.dump(conf_template, f)
 
 
