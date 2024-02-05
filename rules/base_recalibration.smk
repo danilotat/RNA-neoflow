@@ -3,7 +3,7 @@ rule BQSR_1:
         bam=config['OUTPUT_FOLDER'] + config["datadirs"]["bams"]+"/"+"{patient}_split.out.bam",
         GSNPs=config["resources"]["gsnps"],
         indel=config["resources"]["indel"],
-        DbSNP=config["resources"]["dbsnps"],
+        DbSNP=config["resources"]["dbsnp146"],
         fasta=config["resources"]["genome"]
     output:
         recall=config['OUTPUT_FOLDER'] + config["datadirs"]["bams"] + "/" + "{patient}_recal.table"

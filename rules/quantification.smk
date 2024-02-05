@@ -14,7 +14,7 @@ rule salmon_quantification:
     resources:
         time="1:00:00",
         ncpus=4,
-        mem="16G"
+        mem="32G"
     conda:
         "../envs/salmon_new.yml"
     log:
@@ -36,6 +36,10 @@ rule export_quantification:
     params:
         outdir = config['OUTPUT_FOLDER'] + config["datadirs"]["expression"],
         patients = expand('{patient}', patient=patients)
+    resources:
+        time="0:30:00",
+        ncpus=2,
+        mem="8G"
     conda:
         "../envs/merge_salmon_quant.yml"
     script:

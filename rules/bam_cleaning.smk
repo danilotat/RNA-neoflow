@@ -30,6 +30,10 @@ rule bed_to_intervals:
         intervals=config['OUTPUT_FOLDER'] + config["datadirs"]["utils"]+"/"+"coding.interval_list"
     conda:
         "../envs/gatk.yml"
+    resources:
+        time="1:00:00",
+        ncpus=2,
+        mem="8G"
     shell:
         """
         gatk BedToIntervalList -I {input.bed} -SD {input.fasta_dict} -O {output.intervals}
@@ -91,7 +95,11 @@ rule sort_bam_gatk:
     output:
         bam_out=temp(config['OUTPUT_FOLDER'] + config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.md.sorted.bam")
     conda:
-        "../envs/samtool.yml"
+        "../envs/samtools.yml"
+    resources:
+        time="1:00:00",
+        ncpus=2,
+        mem="8G"
     log:
         config['OUTPUT_FOLDER'] + config["datadirs"]["logs"]["bam_cleaning"] + "/" + "{patient}.log"
     shell:
@@ -105,7 +113,11 @@ rule samtools_index:
     output:
         bai=temp(config['OUTPUT_FOLDER'] + config["datadirs"]["bams"]+"/"+"{patient}_Aligned.sortedByCoord.out.md.sorted.bam.bai")
     conda:
-        "../envs/samtool.yml"
+        "../envs/samtools.yml"
+    resources:
+        time="1:00:00",
+        ncpus=2,
+        mem="8G"
     log:
         config['OUTPUT_FOLDER'] + config["datadirs"]["logs"]["bam_cleaning"] + "/" + "{patient}.log"
     shell:
