@@ -27,7 +27,7 @@ def main(yaml_file, template_file, output_file):
     for field in conf_template['annotation']:
         if "gnomAD" in field['names'][0]:
             field['file'] = conf_main['resources']['gnomad']
-        elif "dbsnp" in field['names'][0]:
+        elif "rs_ids" in field['names'][0]:
             field['file'] = conf_main['resources']['dbsnps']
         elif "REDI" in field['names'][0]:
             field['file'] = conf_main['resources']['REDI']
@@ -37,6 +37,8 @@ def main(yaml_file, template_file, output_file):
             field['file'] = conf_main['resources']['indel']
         elif "cosmic" in field['names'][0]:
             field['file'] = conf_main['resources']['cosmic']
+        elif "Unmet" in field['names'][0]:
+            field['file'] = conf_main['resources']['unmet_bed']
         else:
             raise ValueError("Unknown field: {}".format(field['names'][0]))
     # write the output file

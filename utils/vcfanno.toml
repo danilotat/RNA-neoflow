@@ -1,13 +1,13 @@
 [[annotation]]
 file=""
-fields=["AN","AC","AF"]
-names=["gnomAD_AN","gnomAD_AC", "gnomAD_AF"]
-ops=["self", "self", "self"]
+fields=["AC","AF"]
+names=["gnomAD_AC", "gnomAD_AF"]
+ops=["self", "self"]
 
 [[annotation]]
 file=""
 fields=["ID", "AN","AC","AF"]
-names=["dbsnpID","alfa_AN","alfa_AC", "alfa_AF"]
+names=["rs_ids","alfa_AN","alfa_AC", "alfa_AF"]
 ops=["self","self", "self", "self"]
 
 [[annotation]]
@@ -30,16 +30,28 @@ ops=["self", "self", "self"]
 
 [[annotation]]
 file=""
-fields=["ID","CNT"]
-names=["cosmicID", "cosmic_cnt"]
-ops=["self", "self"]
+fields=["ID"]
+names=["cosmic_id"]
+ops=["self"]
+
+[[annotation]]
+file=""
+columns=[4]
+names=["Unmet_score"]
+ops=["self"]
+
+[[postannotation]]
+fields=["gnomAD_AC", "gnomAD_AF"]
+name="gnomad_AN"
+op="lua: divfunc(gnomAD_AC, gnomAD_AF)"
+type="Float"
 
 [[postannotation]]
 name="ID"
-fields=["dbsnpID","cosmicID","ID"]
+fields=["rs_ids","cosmic_id"]
+op="setid"
 type="String"
-op="concat"
 
 [[postannotation]]
-fields=["dbsnpID","cosmicID"]
+fields=["rs_ids","cosmic_id"]
 op="delete"
