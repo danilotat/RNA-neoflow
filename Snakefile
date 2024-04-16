@@ -31,10 +31,11 @@ include:
 rule targets:
     input:
         expand(config["OUTPUT_FOLDER"] + config["datadirs"]["VCF_out"] + '/' + '{patient}_annot_germProb.vcf.gz.tbi', patient=patients),
+        expand(config["OUTPUT_FOLDER"] + config["datadirs"]["peptides"] + '/' + '{patient}.epitopes.csv', patient=patients)
         # expand(config["OUTPUT_FOLDER"] + config["datadirs"]["BAM"] + "/" + "{patient}_sorted.bam", patient=patients),        
         # expand(config["OUTPUT_FOLDER"] + config["datadirs"]["VCF_out"] + "/" + "{patient}_ref_transcript_mismatch_reporter.vcf.gz.tbi", patient=patients),
-        expand(config["OUTPUT_FOLDER"] + config["datadirs"]['HLA_typing']+'/'+'{patient}_allele_input_pvacseq.csv', patient=patients),
-	config['OUTPUT_FOLDER'] + config["datadirs"]["expression"] + '/gene_expression.tsv'
+        #expand(config["OUTPUT_FOLDER"] + config["datadirs"]['HLA_typing']+'/'+'{patient}_allele_input_pvacseq.csv', patient=patients),
+	    # config['OUTPUT_FOLDER'] + config["datadirs"]["expression"] + '/gene_expression.tsv'
         
 include:
     "rules/alignment.smk"
@@ -50,6 +51,8 @@ include:
     "rules/strelka.smk"
 include:
     "rules/filter_calls.smk"
+include:
+    "rules/pMHC.smk"
 # include:
 #     "rules/vatools.smk"
 # include:

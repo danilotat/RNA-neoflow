@@ -9,6 +9,10 @@ rule Strelka_prep:
         runDir=config["OUTPUT_FOLDER"] + config["datadirs"]['VCF_out']+'/'+'{patient}_workflow'
     conda:
         "../envs/strelka2.yml"
+    resources:
+        time="0:20:00",
+        ncpus=1,
+        mem="4G"
     shell:
         """
         configureStrelkaGermlineWorkflow.py \
@@ -23,11 +27,13 @@ rule Strelka2:
     input:
         script=config["OUTPUT_FOLDER"] + config["datadirs"]['VCF_out']+'/'+'{patient}_workflow'+'/'+'runWorkflow.py'
     output:
-        config["OUTPUT_FOLDER"] + config["datadirs"]['VCF_out']+'/'+'{patient}_workflow'+'/results/variants/'+'variants.vcf.gz'
+        #  add 
+        config["OUTPUT_FOLDER"] + config["datadirs"]['VCF_out']+'/'+'{patient}_workflow'+'/results/variants/'+'variants.vcf.gz',
+        txt=config["OUTPUT_FOLDER"] + config["datadirs"]['VCF_out']+'/'+'{patient}_workflow'+'/results/'+'checkpoint.txt'
     params:
         threads=config['params']['strelka2']['threads']
     resources:
-        time="2:00:00",
+        time="4:00:00",
         ncpus=2,
         mem="16G"
     conda:
@@ -35,4 +41,5 @@ rule Strelka2:
     shell:
         """
         {input.script} -m local -j {params.threads}
+        touch "finished" > {output.txt}
         """

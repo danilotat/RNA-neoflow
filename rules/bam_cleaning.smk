@@ -10,6 +10,7 @@ rule AddGrp:
     params:
         RGPU="{patient}",
         RGSM="{patient}",
+        tmp_dir=config["TEMP_DIR"],
         extra="--RGLB rg1 --RGPL illumina"
     resources:
         mem="32G",
@@ -19,7 +20,7 @@ rule AddGrp:
         config['OUTPUT_FOLDER'] + config["datadirs"]["logs"]["bam_cleaning"] + "/" + "{patient}.log"
     shell:
         """
-        gatk AddOrReplaceReadGroups  -I {input.bam} -O {output.rg} {params.extra} --RGPU {params.RGPU} --RGSM {params.RGSM}
+        gatk AddOrReplaceReadGroups  -I {input.bam} -O {output.rg} {params.extra} --TMP_DIR {params.tmp_dir} --RGPU {params.RGPU} --RGSM {params.RGSM}
         """
 
 rule bed_to_intervals:
@@ -97,7 +98,7 @@ rule sort_bam_gatk:
     conda:
         "../envs/samtools.yml"
     resources:
-        time="1:00:00",
+        time="2:00:00",
         ncpus=2,
         mem="8G"
     log:
@@ -140,7 +141,7 @@ rule SplitNCigarReads:
         "../envs/gatk.yml"
     resources:
         mem="32G",
-        time="6:00:00",
+        time="12:00:00",
         ncpus=4
     log:
         config['OUTPUT_FOLDER'] + config["datadirs"]["logs"]["bam_cleaning"] + "/" + "{patient}.log"

@@ -13,8 +13,8 @@ configfile: "config_main.yaml"
 
 configpath = "config_main.yaml"
 
-patients = pd.read_csv("/g100_scratch/userexternal/dtatoni0/Gartner/patients.csv")["patient"]
-units = pd.read_csv("/g100_scratch/userexternal/dtatoni0/Gartner/units.csv").set_index(["patient"], drop=False)
+patients = pd.read_csv("/g100_scratch/userexternal/dtatoni0/Gartner/patients_4032.csv")["patient"]
+units = pd.read_csv("/g100_scratch/userexternal/dtatoni0/Gartner/units_4032.csv").set_index(["patient"], drop=False)
 units = units.sort_index()
 
 slurm_logdir = config['slurm_log_dir']
