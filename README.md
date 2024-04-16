@@ -1,3 +1,5 @@
+[![Actions Status](https://github.com/danilotat/RNA-neoflow/workflows/CI/badge.svg)](https://github.com/danilotat/RNA-neoflow/actions)
+
 # How to 
 
 The pipeline is designed to be executed both on a HPC cluster or a standalone server. To start, edit the file `config_main.yaml` adding the absolute PATH to the required resources. 
