@@ -1,3 +1,4 @@
+.github/
 .snakemake/
 nohup.out
 slurm/
