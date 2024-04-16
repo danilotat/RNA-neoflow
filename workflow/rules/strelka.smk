@@ -1,9 +1,9 @@
 rule Strelka_prep:
     input:
-        bam=config["OUTPUT_FOLDER"]
+        cram=config["OUTPUT_FOLDER"]
         + config["datadirs"]["BQSR"]
         + "/"
-        + "{patient}_recal.bam",
+        + "{patient}_recal.cram",
     output:
         config["OUTPUT_FOLDER"]
         + config["datadirs"]["VCF_out"]
@@ -27,7 +27,7 @@ rule Strelka_prep:
     shell:
         """
         configureStrelkaGermlineWorkflow.py \
-        --bam {input.bam} \
+        --bam {input.cram} \
         --rna \
         --referenceFasta {params.ref_fasta} \
         --callRegions {params.regions} \
@@ -45,7 +45,6 @@ rule Strelka2:
         + "/"
         + "runWorkflow.py",
     output:
-        #  add 
         config["OUTPUT_FOLDER"]
         + config["datadirs"]["VCF_out"]
         + "/"
