@@ -1,4 +1,3 @@
 patient,fq1,fq2
-Pt1,../test_data/patient1_tumor_1.fastq.gz,../test_data/patient1_tumor_2.fastq.gz
-Pt2,../test_data/patient2_tumor_1.fastq.gz,../test_data/patient2_tumor_2.fastq.gz
-Pt3,../test_data/patient3_tumor_1.fastq.gz,../test_data/patient3_tumor_2.fastq.gz
+Pt19,test_data/pat19_pd1_pre_1.fastq.gz,test_data/pat19_pd1_pre_2.fastq.gz
+Pt44,test_data/pat44_pd1_pre_1.fastq.gz,test_data/pat44_pd1_pre_1.fastq.gz

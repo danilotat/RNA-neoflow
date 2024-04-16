@@ -6,7 +6,7 @@ rule BQSR_1:
         + "{patient}_split.out.bam",
         GSNPs=config["resources"]["gsnps"],
         indel=config["resources"]["indel"],
-        DbSNP=config["resources"]["dbsnp146"],
+        DbSNP=config["resources"]["dbsnps"],
         fasta=config["resources"]["genome"],
     output:
         recall=config["OUTPUT_FOLDER"]

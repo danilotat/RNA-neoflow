@@ -6,17 +6,17 @@ from snakemake.utils import min_version
 min_version("5.9.1")
 
 
-configfile: "../config/config_main.yaml"
+configfile: "config/config_main.yaml"
 
 
 # Load patient info.
 # Note that this dataframe is accessed every time to determine the wildcards used
 # at each step of the analysis while needed.
 
-configpath = "../config/config_main.yaml"
+configpath = "config/config_main.yaml"
 
-patients = pd.read_csv("../patients.csv")["patient"]
-units = pd.read_csv("../units.csv").set_index(["patient"], drop=False)
+patients = pd.read_csv("patients.csv")["patient"]
+units = pd.read_csv("units.csv").set_index(["patient"], drop=False)
 units = units.sort_index()
 
 slurm_logdir = config["slurm_log_dir"]

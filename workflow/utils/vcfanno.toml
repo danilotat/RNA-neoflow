@@ -34,12 +34,6 @@ fields=["ID"]
 names=["cosmic_id"]
 ops=["self"]
 
-[[annotation]]
-file=""
-columns=[4]
-names=["Unmet_score"]
-ops=["self"]
-
 [[postannotation]]
 fields=["gnomAD_AC", "gnomAD_AF"]
 name="gnomad_AN"

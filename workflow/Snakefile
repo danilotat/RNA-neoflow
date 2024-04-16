@@ -5,7 +5,7 @@ import sys
 from collections import Counter
 
 
-configfile: "../config/config_main.yaml"
+configfile: "config/config_main.yaml"
 
 
 def keep_paired_samples(patient_list):
