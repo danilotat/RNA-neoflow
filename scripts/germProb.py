@@ -4,21 +4,12 @@ import scipy.stats as stats
 import sys
 
 ########### PRIORS ###########
-pis = np.array(["0.00011384","0.00011123","0.0001134","0.00011447","0.00011315","0.00011356",
-    "0.00011308","0.00011137","0.0001118","0.0001147","0.00011516","0.0001114","0.00011502",
-    "0.00011414","0.00011204","0.00011251","0.00011369","0.00011515","0.00011314","0.00011102",
-    "0.000114","0.00011275","0.00011452","0.00011382","0.00011344","0.00011177","0.0001122",
-    "0.00011184","0.00011313","0.00011059","0.00011443","0.00011234","0.0001115","0.00011236",
-    "0.00011078","0.00011357","0.00011404","0.00011232","0.00011393","0.00011206","0.00011411",
-    "0.00011236","0.0001111","0.00011471","0.0001135","0.00011332","0.00011662","0.0001138",
-    "0.00011056","0.00011303","0.00011252","0.00011169","0.00011245","0.00010985","0.00011473",
-    "0.00011102","0.00011303","0.00011332","0.00011057","0.00011218","0.00011225","0.00011305",
-    "0.00011611","0.0001131","0.00011185","0.00011408","0.00011381","0.00011215","0.00011511",
-    "0.000113"], dtype=float)
+# For concept behind this calculation, refer to
+# the accompanying publication
+##############################
 
-alpha_exonMut, beta_exonMut = (0.8651947104981104, 185.90089630396128)
-alpha_MutRatio, beta_MutRatio = (0.47724493362038634, 20.01410347598762)
-alpha_pi, beta_pi = (6570.723319753332, 58154364.249282956)
+alpha_exonMut, beta_exonMut = (0.87, 612.23)
+alpha_MutRatio, beta_MutRatio = (0.95, 199.58)
 
 ##################################
 
@@ -52,14 +43,19 @@ def prob_to_phred(prob: float):
 
 class variantProb():
     """
-    This class extends the cyvcf2.Variant class to include the probability of being a germline variant.
+    This class extends the cyvcf2.Variant class to include the probability of being a germ-line variant.
     """
     def __init__(self, variant: cyvcf2.Variant, pis: np.array):
         self.variant = variant
-        self.pis = pis
-        self.fixed_pi = stats.beta.rvs(alpha_pi, beta_pi)
+        self.fixed_pi = stats.beta.rvs(alpha_exonMut, beta_exonMut) * stats.beta.rvs(alpha_MutRatio, beta_MutRatio)
+        self.is_het = self._read_genotype()[0]
+        self.is_homalt = self._read_genotype()[1]
+        self.is_homref = self._read_genotype()[2]
+        self.is_haploid = self._read_genotype()[3]
+        self.is_phased = self._read_genotype()[4]
+        self.hetLT = self._get_LTs("het")
+        self.homaltLT = self._get_LTs("homalt")
         self.avg_freq = self._get_avg_freq()
-        self.germ_LTs = self._assign_germ_LT()
         self.germ_prob = self._germProb()
 
     def _get_avg_freq(self):
@@ -78,42 +74,74 @@ class variantProb():
             try:
                 return np.average(AFs, weights=ANs)
             except ZeroDivisionError:
-                return 0
+                return np.round(0.01/(71702*2), 4)
         else:
-            # when we have no AF or AN, we use the priors as defined in the Mutect2 paper
-            return stats.beta.rvs(0.01, 10)
-        
-        
-        
-    def _assign_germ_LT(self) -> list:
+            # when we have no AF or AN, we use the priors as defined in the Mutect2 paper.
+            # they stated to use the mean of the posterior defined by 
+            # Beta(α, β + N), which is basically α/N
+            # where N is equal to gnomAD sample size * 2 (chromosomes)
+            return np.round(0.01/(71702*2), 4)
+                
+    def _read_genotype(self):
         """
-        Goal of this function is to assign likelihood for the only three main cases.
-        1. Ref homo
-        2. Heterozygous
-        3. Alt homo
+        Just an helper to handle haploid scenario. Motivated by
+        https://github.com/brentp/cyvcf2/issues/204
         """
-        LTs = []
-        try:
-            for gt_LT in (self.variant.gt_phred_ll_homref[0],self.variant.gt_phred_ll_het[0],self.variant.gt_phred_ll_homalt[0]):
-                LTs.append(phred_to_prob(gt_LT))
-            return LTs
-        except IndexError:
-            return [0,0,0]
-        
+        # unpack genotype
+        is_het = False
+        is_homalt = False
+        is_homref = False
+        is_haploid = False
+        phased = False
+        fields = self.variant.genotypes[0]
+        if len(fields) == 2:
+            # haploid call
+            is_haploid = True
+            is_homalt = True if fields[0] == 1 else False 
+            is_homref = True if fields[0] == 0 else False
+        else:
+            # diploid call
+            is_homalt = True if fields[0] == 1 and fields[1] == 1 else False
+            is_het = True if fields[0] != fields[1] else False
+            is_homref = True if fields[0] == 0 and fields[1] == 0 else False
+        return (is_het, is_homalt, is_homref, is_haploid, phased)
+
+    def _get_LTs(self, which="het") -> float:
+        """
+        Helper with the same concept as before
+
+        Args:
+            which (str): "het" or "homalt"
+        """
+        if self.is_haploid:
+            # this completely break the assignation of objects for the cyvcf2 API.
+            if self.is_homalt:
+                if which == "het":
+                    return prob_to_phred(np.finfo(float).eps)
+                else:
+                    return self.variant.gt_phred_ll_het[0]
+            else:
+                raise NotImplementedError("Haploid homref not implemented")
+        else:
+            if which == "het":
+                return self.variant.gt_phred_ll_het[0]
+            else:
+                return self.variant.gt_phred_ll_homalt[0]
+
+
     def __str__(self):
         return str(self.variant)
 
 
     def _germProb(self) -> tuple:
         p_S = self.fixed_pi
-        p0_1 = phred_to_prob(self.germ_LTs[1]) * self.avg_freq * (1 - self.avg_freq) 
-        p1_1 = self.avg_freq**2 * phred_to_prob(self.germ_LTs[-1]) 
+        p0_1 = phred_to_prob(self.hetLT) * self.avg_freq * (1 - self.avg_freq) 
+        p1_1 = self.avg_freq**2 * phred_to_prob(self.homaltLT) 
         # get normalized probabilities
         post0_1 = prob_to_phred(p0_1 / (p_S + p0_1 + p1_1))
         post1_1 = prob_to_phred(p1_1 / (p_S + p0_1 + p1_1))
         p_S = prob_to_phred(p_S / (p_S + p0_1 + p1_1))
         return (post0_1, post1_1, p_S)
-        
 
 def writeGermProb(input_vcf: str, output_vcf: str):
     """
@@ -129,14 +157,13 @@ def writeGermProb(input_vcf: str, output_vcf: str):
     )
     outfile = cyvcf2.Writer(output_vcf, tmpl=vcf_file, mode='wz')
     for variant in vcf_file:
-        variant_adj = variantProb(variant, pis)
+        variant_adj = variantProb(variant)
         variant.INFO['hetProb'] = variant_adj.germ_prob[0]
         variant.INFO['homaltProb'] = variant_adj.germ_prob[1]
         variant.INFO['somProb'] = variant_adj.germ_prob[2]
         outfile.write_record(variant)
     outfile.close()
     
-
 
 if __name__ == "__main__":
     writeGermProb(sys.argv[1], sys.argv[2])
