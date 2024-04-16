@@ -1,0 +1,56 @@
+import glob
+import os
+import pandas as pd
+import sys
+from collections import Counter
+
+
+configfile: "../config/config_main.yaml"
+
+
+def keep_paired_samples(patient_list):
+    counts = Counter(patient_list)
+    # keep only patients with matched tumor/normal
+    to_keep = [patient for patient in patient_list if counts[patient] > 1]
+    # escamoutage to keep insertion order. Works only on Python > 3.6 !
+    return list(dict.fromkeys(to_keep).keys())
+
+
+def sample_from_patient(df, patient_list, condition):
+    samples = []
+    for x in patient_list:
+        samples.append(
+            df[(df.phenotype == condition) & (df.subject_id == x)].Sample.values[0]
+        )
+    return samples
+
+
+include: "rules/common.smk"
+
+
+rule targets:
+    input:
+        expand(
+            config["OUTPUT_FOLDER"]
+            + config["datadirs"]["VCF_out"]
+            + "/"
+            + "{patient}_annot_germProb.vcf.gz.tbi",
+            patient=patients,
+        ),
+        expand(
+            config["OUTPUT_FOLDER"]
+            + config["datadirs"]["peptides"]
+            + "/"
+            + "{patient}.epitopes.csv",
+            patient=patients,
+        ),
+
+
+include: "rules/alignment.smk"
+include: "rules/quantification.smk"
+include: "rules/bam_cleaning.smk"
+include: "rules/base_recalibration.smk"
+include: "rules/HLA_typing.smk"
+include: "rules/strelka.smk"
+include: "rules/filter_calls.smk"
+include: "rules/pMHC.smk"

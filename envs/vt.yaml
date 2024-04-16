@@ -1,8 +1,0 @@
-name: vt
-channels:
-  - bioconda
-  - conda-forge
-  - defaults
-dependencies:
-- pip
-- vt

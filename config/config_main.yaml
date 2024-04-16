@@ -1,0 +1,139 @@
+# Adjust parameter for custom analysis
+
+# -- Temp directory for gatk -- #
+TEMP_DIR: "/g100_scratch/userexternal/dtatoni0/Gartner/temp_gatk"
+slurm_log_dir: slurm-logs
+
+# -- Base paths -- #
+
+OUTPUT_FOLDER : "/g100_scratch/userexternal/dtatoni0/Gartner/ENEO_output/"
+
+# -- Relative paths to concatenate -- #
+# -- OUTPUT STRUCTURE -- #
+datadirs:
+  trimmed_reads: "trimmed_reads"
+  trimming_report: "fastp_report"
+  mapped_reads:  "mapped_reads"
+  salmon_quant: "quantification"
+  expression: "expression_data"
+  bams: "bams"
+  utils: "utils"
+  HLA_typing: "HLA_typing"
+  BQSR:  "BQSR"
+  VCF:  "VCF"
+  VCF_germ: "VCF_germ"
+  VCF_out: "VCF_out"  
+  peptides: "peptides"  
+  logs:
+    align: "log/align"
+    annotate_variants: "log/annotate_variants"
+    bam_cleaning: "log/bam_cleaning"
+    bam_readcount: "log/bam_readcount"
+    base_recalibration: "log/base_recalibration"
+    decompose: "log/decompose"
+    t1k: "log/t1k"
+    arcasHLA: "log/arcasHLA"
+    star_idx:  "log/star_idx"
+    pvacseq: "log/pvacseq"
+    salmon_quant: "log/salmon_quant"
+    trimming: "log/trimming"
+    ref_transcript_mismatch_reporter: "log/ref_transcript_mismatch_reporter"
+    snv_calling: "log/snv_calling"
+    sort_bam: "log/sort_bam"
+    vatools: "log/vatools"
+    vcf_expression_annotator: "log/vcf_expression_annotator"
+    vcf_readcount_annotator_indel: "log/vcf_readcount_annotator_indel"
+    vcf_readcount_annotator_snp: "log/vcf_readcount_annotator_snp"
+
+# -- RESOURCES -- #
+# Despite the possibility to put all of them inside a single folder, the choice to write them down 
+# explicitely is intentional. That's because a bioinformatic research group could already have many 
+# of these files on their server in different locations, so it's useless to move them in a single 
+# folder breaking existing practices e/o workflows.
+
+resources:
+  # -- references -- #
+  genome: "/g100_work/IscrC_ENEO2/resources/fasta/Homo_sapiens.GRCh38.dna.primary_assembly.fa"
+  transcriptome: "/g100_work/IscrC_ENEO2/resources/fasta/Homo_sapiens.GRCh38.cdna.all.fa"
+  gtf: "/g100_work/IscrC_ENEO2/resources/gtf/Homo_sapiens.GRCh38.105.gtf"
+  # -- indices -- #
+  star_index: "/g100_work/IscrC_ENEO2/resources/genome_index"
+  salmon_idx: "/g100_work/IscrC_ENEO2/resources/salmon_index_GRCh38_ensembl"
+  # -- vcfs -- #
+  gsnps: "/g100_work/IscrC_ENEO2/resources/vcf/1000G_phase1.snps.high_confidence.hg38.vcf.gz"
+  gnomad: "/g100_work/IscrC_ENEO2/resources/vcf/af-only-gnomad.hg38.vcf.gz"
+  dbsnps: "/g100_work/IscrC_ENEO2/resources/vcf/dbsnpALFA_hg38_filtered_conv_withAF.vcf.gz"
+  dbsnp146: "/g100_work/IscrC_ENEO2/resources/vcf/dbsnp_146.hg38.vcf.gz"
+  REDI: "/g100_work/IscrC_ENEO2/resources/vcf/REDIportal_AtoI_sites.hg38.BED.gz"
+  small_exac: "/g100_work/IscrC_ENEO2/resources/vcf/small_exac_common_3.hg38.vcf.gz"
+  indel: "/g100_work/IscrC_ENEO2/resources/vcf/Homo_sapiens_assembly38.known_indels.vcf.gz"
+  cosmic: "/g100_work/IscrC_ENEO2/resources/vcf/cosmic_somatic.gz"
+  # -- other -- #
+  vep_cache: "/g100_work/IscrC_ENEO2/resources/vep_cache"
+  vep_plugin: "/g100_work/IscrC_ENEO2/resources/vep_plugin"
+  intervals_coding: "supplementary_res/intervals_coding.BED.gz"
+  unmet_bed: "/g100_work/IscrC_ENEO2/resources/vcf/hg38_genome.UNMET_bin10bp.BED.gz"
+  vcfanno_binary: "utils/vcfanno_linux64"
+  vcfanno_toml: "utils/vcfanno.toml"
+  vcfanno_lua: "utils/custom.lua"
+  t1k_file: "supplementary_res/hlaidx_rna_seq.fa"
+# -- TOOLS PARAMS -- #
+# moved from a tool centered to a resource type one 
+params:
+  STAR:
+    threads: 12
+    RAM: 
+    extra: "--twopassMode Basic --outSAMtype BAM Unsorted --readFilesCommand zcat " 
+  t1k:
+    threads: 8
+    RAM: 
+    extra: 
+  salmon:
+    threads: 8
+    RAM: 
+    extra:
+      index: "--keep-duplicates"
+      libtype: "A"
+      zip_ext: "gz"
+      extra: "--gcBias --seqBias --reduceGCMemory"
+  samtools:
+    threads: 4
+    RAM: 
+    extra: ""
+  MarkDuplicates:
+    threads: 4
+    RAM: 30000
+    extra: ""
+  SplitNCigarReads:
+    threads: 4
+    RAM: 30000
+    extra: ""
+  BQSR:
+    threads: 4
+    RAM: 30000
+    extra: ""
+  gatk:
+    RAM: 20  
+    extra:
+      RGPU: unit1
+      RGSM: 20
+  strelka2:
+    threads: 8
+    RAM: 
+    extra:
+  vcfanno:
+    threads: 8
+    RAM: 
+    extra:
+  pvacseq:
+    threads: 2
+    RAM: 
+    extra:
+  vep:
+    threads: 
+    RAM: 
+    extra:
+      assembly: "GRCh38"
+      filtering: "--gencode_basic --coding_only --no_intergenic"
+  pMHC:
+    threads: 4
