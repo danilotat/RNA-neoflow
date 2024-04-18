@@ -1,4 +1,6 @@
-[![Actions Status](https://github.com/danilotat/RNA-neoflow/workflows/CI/badge.svg)](https://github.com/danilotat/RNA-neoflow/actions)
+![Formatting and Linting](https://github.com/danilotat/RNA-neoflow/workflows/Format%20and%20Linting/badge.svg)
+![Testing](https://github.com/danilotat/RNA-neoflow/workflows/Testing/badge.svg)
+
 
 # How to 
 

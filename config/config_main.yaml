@@ -72,10 +72,10 @@ resources:
   # local copy of the vep cache. Refer to the documentation for the full setup
   vep_cache: "/g100_work/IscrC_ENEO2/resources/vep_cache"
   vep_plugin: "/g100_work/IscrC_ENEO2/resources/vep_plugin"
-  intervals_coding: "supplementary_res/intervals_coding.BED.gz"
-  vcfanno_binary: "utils/vcfanno_linux64"
-  vcfanno_toml: "utils/vcfanno.toml"
-  vcfanno_lua: "utils/custom.lua"
+  intervals_coding: "workflow/supplementary_res/intervals_coding.BED.gz"
+  vcfanno_binary: "workflow/utils/vcfanno_linux64"
+  vcfanno_toml: "workflow/utils/vcfanno.toml"
+  vcfanno_lua: "workflow/utils/custom.lua"
   t1k_file: "workflow/supplementary_res/hlaidx_rna_seq.fa"
 # -- TOOLS PARAMS -- #
 # moved from a tool centered to a resource type one 
