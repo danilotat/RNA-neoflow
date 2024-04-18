@@ -20,6 +20,11 @@ rule Strelka_prep:
         + "{patient}_workflow",
     conda:
         "../envs/strelka2.yml"
+    log:
+        config["OUTPUT_FOLDER"]
+        + config["datadirs"]["logs"]["snv_calling"]
+        + "/"
+        + "{patient}_strelka_prep.log",
     resources:
         time="0:20:00",
         ncpus=1,
@@ -59,12 +64,17 @@ rule Strelka2:
         + "checkpoint.txt",
     params:
         threads=config["params"]["strelka2"]["threads"],
+    conda:
+        "../envs/strelka2.yml"
+    log:
+        config["OUTPUT_FOLDER"]
+        + config["datadirs"]["logs"]["snv_calling"]
+        + "/"
+        + "{patient}_calling.log",
     resources:
         time="4:00:00",
         ncpus=2,
         mem="16G",
-    conda:
-        "../envs/strelka2.yml"
     shell:
         """
         {input.script} -m local -j {params.threads}

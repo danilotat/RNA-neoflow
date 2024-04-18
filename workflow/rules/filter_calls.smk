@@ -8,7 +8,12 @@ rule vcfanno:
         + config["datadirs"]["VCF_out"]
         + "/"
         + "{patient}_workflow"
-        + "/results/variants/variants.vcf.gz",
+        + "/"
+        + "results"
+        + "/"
+        + "variants"
+        + "/"
+        + "variants.vcf.gz",
     output:
         vcf=temp(
             config["OUTPUT_FOLDER"]
@@ -27,6 +32,11 @@ rule vcfanno:
         extra="--permissive-overlap",
         lua=config["resources"]["vcfanno_lua"],
     threads: config["params"]["vcfanno"]["threads"]
+    log:
+        config["OUTPUT_FOLDER"]
+        + config["datadirs"]["logs"]["annotate_variants"]
+        + "/"
+        + "{patient}_vcfanno.log",
     resources:
         time="1:00:00",
         ncpus=4,
@@ -63,6 +73,11 @@ rule filtercalls:
     conda:
         "../envs/samtools.yml"
     threads: config["params"]["samtools"]["threads"]
+    log:
+        config["OUTPUT_FOLDER"]
+        + config["datadirs"]["logs"]["annotate_variants"]
+        + "/"
+        + "{patient}_bcftools.log",
     resources:
         time="0:20:00",
         ncpus=2,
@@ -84,6 +99,11 @@ rule createTOML:
         toml_file=config["OUTPUT_FOLDER"] + "vcfanno.toml",
     conda:
         "../envs/cyvcf2.yml"
+    log:
+        config["OUTPUT_FOLDER"]
+        + config["datadirs"]["logs"]["annotate_variants"]
+        + "/"
+        + "toml.log",
     resources:
         time="0:20:00",
         ncpus=1,
@@ -111,6 +131,11 @@ rule germProb:
         + "{patient}_annot_germProb.vcf.gz",
     conda:
         "../envs/cyvcf2.yml"
+    log:
+        config["OUTPUT_FOLDER"]
+        + config["datadirs"]["logs"]["annotate_variants"]
+        + "/"
+        + "{patient}_germprob.log",
     resources:
         time="0:20:00",
         ncpus=1,
@@ -134,6 +159,11 @@ rule indexgermProb:
         + "{patient}_annot_germProb.vcf.gz.tbi",
     conda:
         "../envs/samtools.yml"
+    log:
+        config["OUTPUT_FOLDER"]
+        + config["datadirs"]["logs"]["annotate_variants"]
+        + "/"
+        + "{patient}_idxgermProb.log",
     resources:
         time="0:20:00",
         ncpus=1,

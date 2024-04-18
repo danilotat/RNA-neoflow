@@ -7,24 +7,6 @@ from collections import Counter
 
 configfile: "config/config_main.yaml"
 
-
-def keep_paired_samples(patient_list):
-    counts = Counter(patient_list)
-    # keep only patients with matched tumor/normal
-    to_keep = [patient for patient in patient_list if counts[patient] > 1]
-    # escamoutage to keep insertion order. Works only on Python > 3.6 !
-    return list(dict.fromkeys(to_keep).keys())
-
-
-def sample_from_patient(df, patient_list, condition):
-    samples = []
-    for x in patient_list:
-        samples.append(
-            df[(df.phenotype == condition) & (df.subject_id == x)].Sample.values[0]
-        )
-    return samples
-
-
 include: "rules/common.smk"
 
 

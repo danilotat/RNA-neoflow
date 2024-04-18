@@ -26,12 +26,9 @@ logpath.mkdir(parents=True, exist_ok=True)
 bam_final_path = config["datadirs"]["BQSR"]
 ref_fasta = config["resources"]["genome"]
 ref_dict = ref_fasta.replace(".fa", ".dict")
-HLA_path = config["OUTPUT_FOLDER"] + config["datadirs"]["HLA_typing"]
 intervals_path = os.path.join(
     config["OUTPUT_FOLDER"] + config["datadirs"]["utils"], "interval-files"
 )
-vcfs_somatic_path = config["OUTPUT_FOLDER"] + config["datadirs"]["VCF"]
-vcfs_germline_path = config["OUTPUT_FOLDER"] + config["datadirs"]["VCF_germ"]
 
 num_workers = 20
 
@@ -42,6 +39,22 @@ READ = ["1", "2"]
 wildcard_constraints:
     patient="|".join(patients),
 
+
+def keep_paired_samples(patient_list):
+    counts = Counter(patient_list)
+    # keep only patients with matched tumor/normal
+    to_keep = [patient for patient in patient_list if counts[patient] > 1]
+    # escamoutage to keep insertion order. Works only on Python > 3.6 !
+    return list(dict.fromkeys(to_keep).keys())
+
+
+def sample_from_patient(df, patient_list, condition):
+    samples = []
+    for x in patient_list:
+        samples.append(
+            df[(df.phenotype == condition) & (df.subject_id == x)].Sample.values[0]
+        )
+    return samples
 
 def get_fastq(wildcards):
     """Return a dict where keys are read1/2 and values are list of files"""
@@ -78,49 +91,6 @@ def get_interval_files():
     files = [i + "-scattered.interval_list" for i in ints]
     files = [os.path.join(intervals_path, f) for f in files]
     return files
-
-
-def get_orientationbias_input(wildcards):
-    intervals = get_intervals()
-    files = [
-        f"{vcfs_somatic_path}/{wildcards.patient}.{i}.f1r2.tar.gz" for i in intervals
-    ]
-    return files
-
-
-def get_mergevcfs_input(wildcards):
-    intervals = get_intervals()
-    files = [
-        f"{vcfs_somatic_path}/{wildcards.patient}.{i}.unfiltered.vcf.gz"
-        for i in intervals
-    ]
-    return files
-
-
-def get_mergestats_input(wildcards):
-    intervals = get_intervals()
-    files = [
-        f"{vcfs_somatic_path}/{wildcards.patient}.{i}.unfiltered.vcf.gz.stats"
-        for i in intervals
-    ]
-    return files
-
-
-def read_hla(wildcards):
-    """
-    Read list HLA from allele_input_pvacseq.csv used as input for pvacseq
-    """
-    # the try/except is just a workaround as Snakemake evaluates functions before running rule, so this file
-    # didn't exist before the rule HLA_typing is completed.
-    hla_genotype = ""
-    try:
-        with open(
-            f"{HLA_path}/{wildcards.patient}_output/allele_input_pvacseq.csv", "r"
-        ) as hla_file:
-            hla_genotype = hla_file.read()
-    except FileNotFoundError:
-        hla_genotype = "HLA-A*11:303"
-    return hla_genotype
 
 
 def sample_from_patient(df, patient_list, condition):

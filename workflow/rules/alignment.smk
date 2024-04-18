@@ -3,7 +3,7 @@ rule align:
         unpack(get_fastq),
         index=config["resources"]["star_index"],
     output:
-        temp(
+        bam=temp(
             config["OUTPUT_FOLDER"]
             + config["datadirs"]["mapped_reads"]
             + "/"
@@ -13,9 +13,7 @@ rule align:
         "../envs/star.yml"
     params:
         index=lambda wc, input: input.index,
-        prefix=config["OUTPUT_FOLDER"]
-        + config["datadirs"]["mapped_reads"]
-        + "/{patient}_",
+        prefix=lambda wc, output: os.path.join(output.bam, wc.patient, "_"),
         extra="--sjdbGTFfile {} {}".format(
             config["resources"]["gtf"], config["params"]["STAR"]["extra"]
         ),
@@ -52,10 +50,6 @@ rule sortAlign:
         ),
     conda:
         "../envs/samtools.yml"
-    params:
-        prefix=config["OUTPUT_FOLDER"]
-        + config["datadirs"]["mapped_reads"]
-        + "/{patient}_",
     threads: config["params"]["samtools"]["threads"]
     resources:
         mem="10G",
@@ -87,10 +81,6 @@ rule indexSortAligned:
         ),
     conda:
         "../envs/samtools.yml"
-    params:
-        prefix=config["OUTPUT_FOLDER"]
-        + config["datadirs"]["mapped_reads"]
-        + "/{patient}_",
     threads: config["params"]["samtools"]["threads"]
     resources:
         mem="10G",

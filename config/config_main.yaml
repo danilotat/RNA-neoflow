@@ -31,19 +31,18 @@ datadirs:
     bam_readcount: "log/bam_readcount"
     base_recalibration: "log/base_recalibration"
     decompose: "log/decompose"
-    t1k: "log/t1k"
-    arcasHLA: "log/arcasHLA"
-    star_idx:  "log/star_idx"
-    pvacseq: "log/pvacseq"
+    export_quant: "log/export_quant"
+    intervals: "log/intervals"
+    pMHC: "log/pMHC"
     salmon_quant: "log/salmon_quant"
-    trimming: "log/trimming"
-    ref_transcript_mismatch_reporter: "log/ref_transcript_mismatch_reporter"
     snv_calling: "log/snv_calling"
     sort_bam: "log/sort_bam"
-    vatools: "log/vatools"
-    vcf_expression_annotator: "log/vcf_expression_annotator"
-    vcf_readcount_annotator_indel: "log/vcf_readcount_annotator_indel"
-    vcf_readcount_annotator_snp: "log/vcf_readcount_annotator_snp"
+    star_idx:  "log/star_idx"
+    t1k: "log/t1k"
+    trimming: "log/trimming"
+
+
+
 
 # -- RESOURCES -- #
 # Despite the possibility to put all of them inside a single folder, the choice to write them down 

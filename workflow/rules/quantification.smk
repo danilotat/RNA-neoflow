@@ -6,7 +6,8 @@ rule salmon_quantification:
         + config["datadirs"]["salmon_quant"]
         + "/"
         + "{patient}"
-        + "/quant.sf",
+        + "/"
+        + "quant.sf",
     params:
         index=config["resources"]["salmon_idx"],
         libtype=config["params"]["salmon"]["extra"]["libtype"],
@@ -26,7 +27,8 @@ rule salmon_quantification:
     log:
         config["OUTPUT_FOLDER"]
         + config["datadirs"]["logs"]["salmon_quant"]
-        + "/{patient}.log",
+        + "/"
+        + "{patient}.log",
     shell:
         """
         salmon quant -l {params.libtype} -i {params.index} -1 {input.r1} -2 {input.r2} -p {threads} -o {params.outdir}
@@ -40,7 +42,8 @@ rule export_quantification:
             + config["datadirs"]["salmon_quant"]
             + "/"
             + "{patient}"
-            + "/quant.sf",
+            + "/"
+            + "quant.sf",
             patient=patients,
         ),
         index=config["resources"]["salmon_idx"],
@@ -49,13 +52,20 @@ rule export_quantification:
     output:
         transcript=config["OUTPUT_FOLDER"]
         + config["datadirs"]["expression"]
-        + "/transcript_expression.tsv",
+        + "/"
+        + "transcript_expression.tsv",
         gene=config["OUTPUT_FOLDER"]
         + config["datadirs"]["expression"]
-        + "/gene_expression.tsv",
+        + "/"
+        + "gene_expression.tsv",
     params:
-        outdir=config["OUTPUT_FOLDER"] + config["datadirs"]["expression"],
+        outfolder=lambda w, output: os.path.dirname(os.path.abspath(output.gene)),
         patients=expand("{patient}", patient=patients),
+    log:
+        config["OUTPUT_FOLDER"]
+        + config["datadirs"]["logs"]["export_quant"]
+        + "/"
+        + "export_quantification.log",
     resources:
         time="0:30:00",
         ncpus=2,

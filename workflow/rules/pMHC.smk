@@ -1,3 +1,5 @@
+import os
+
 rule pMHCpeptides:
     input:
         vcf=config["OUTPUT_FOLDER"]
@@ -14,15 +16,24 @@ rule pMHCpeptides:
         + "{patient}_genotype.tsv",
     params:
         patname="{patient}",
-        outfolder=config["OUTPUT_FOLDER"] + config["datadirs"]["peptides"],
+        outfolder=lambda w, output: os.path.dirname(os.path.abspath(output.out)),
         threads=config["params"]["pMHC"]["threads"],
     output:
         out=config["OUTPUT_FOLDER"]
         + config["datadirs"]["peptides"]
         + "/"
         + "{patient}.epitopes.csv",
-    singularity:
+    container:
         "docker://danilotat/netmhcpan-minimal"
+    log:
+        config["OUTPUT_FOLDER"]
+        + config["datadirs"]["logs"]["pMHC"]
+        + "/"
+        + "{patient}.log",
+    resources:
+        time="2:00:00",
+        ncpus=4,
+        mem="8G",
     shell:
         """
         python3 netmhcpan_launcher.py --vcf {input.vcf} -a {input.hla} -p {params.patname} -o {params.outfolder} -t {params.threads}

@@ -8,7 +8,7 @@ rule star_index:
     conda:
         "../envs/star.yml"
     log:
-        config["datadirs"]["logs"]["star_idx"] + "/{patient}.log",
+        config["datadirs"]["logs"]["star_idx"] + "/star_idx.log",
     resources:
         mem="60G",
         ncpus=8,
@@ -24,6 +24,8 @@ rule salmon_gentrome:
         cdna=config["resources"]["transcriptome"],
     output:
         temp(config["resources"] + "/" + "gentrome.fa.gz"),
+    log:
+        config["datadirs"]["logs"]["salmon_quant"] + "/" + "gentrome.log",
     shell:
         "cat {input.genome} {input.cdna} | gzip > {output}"
 

@@ -51,35 +51,15 @@ rule bed_to_intervals:
         time="1:00:00",
         ncpus=2,
         mem="8G",
+    log:
+        config["OUTPUT_FOLDER"]
+        + config["datadirs"]["logs"]["intervals"]
+        + "/"
+        + "interval.log",
     shell:
         """
         gatk BedToIntervalList -I {input.bed} -SD {input.fasta_dict} -O {output.intervals}
         """
-
-
-#########################################################################
-########## -- OLD RULES ?? -- ##########################################
-
-# rule split_intervals:
-#     input:
-#         ref=ref_fasta,
-#         intervals=config['OUTPUT_FOLDER'] + config["datadirs"]["utils"]+"/"+"coding.interval_list"
-#     output:
-#         interval_files
-#     params:
-#         N=num_workers,
-#         d=config['OUTPUT_FOLDER'] + config["datadirs"]["utils"]+'/'+"interval-files"
-#     conda:
-#         "../envs/gatk.yml"
-#     shell:
-#         """
-#         gatk SplitIntervals -R {input.ref} -L {input.intervals} \
-#             --scatter-count {params.N} -O {params.d} \
-#             --subdivision-mode BALANCING_WITHOUT_INTERVAL_SUBDIVISION
-#         """
-##############################################################################
-##############################################################################
-
 
 rule mark_duplicates:
     input:
