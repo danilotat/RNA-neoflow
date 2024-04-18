@@ -1,12 +1,12 @@
 # Adjust parameter for custom analysis
 
 # -- Temp directory for gatk -- #
-TEMP_DIR: "/g100_scratch/userexternal/dtatoni0/Gartner/temp_gatk"
+TEMP_DIR: "temp_gatk"
 slurm_log_dir: slurm-logs
 
 # -- Base paths -- #
 
-OUTPUT_FOLDER : "/g100_scratch/userexternal/dtatoni0/Gartner/ENEO_output/"
+OUTPUT_FOLDER : "ENEO_output/"
 
 # -- Relative paths to concatenate -- #
 # -- OUTPUT STRUCTURE -- #
