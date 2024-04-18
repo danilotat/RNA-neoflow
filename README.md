@@ -1,5 +1,5 @@
-![Formatting and Linting](https://github.com/danilotat/RNA-neoflow/workflows/Format%20and%20Linting/badge.svg?branch=main&event=push)
-![Testing](https://github.com/danilotat/RNA-neoflow/workflows/Testing/badge.svg?branch=main&event=push)
+![Formatting and Linting](https://github.com/danilotat/RNA-neoflow/workflows/Format%20and%20Linting/badge.svg)
+![Testing](https://github.com/danilotat/RNA-neoflow/workflows/Testing/badge.svg)
 
 
 # How to 
