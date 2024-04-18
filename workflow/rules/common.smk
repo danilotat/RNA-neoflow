@@ -25,7 +25,7 @@ logpath.mkdir(parents=True, exist_ok=True)
 
 bam_final_path = config["datadirs"]["BQSR"]
 ref_fasta = config["resources"]["genome"]
-ref_dict = ref_fasta.replace(".fa.gz", ".dict")
+ref_dict = ref_fasta.replace(".fa", ".dict")
 intervals_path = os.path.join(
     config["OUTPUT_FOLDER"] + config["datadirs"]["utils"], "interval-files"
 )
