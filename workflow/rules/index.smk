@@ -21,7 +21,7 @@ rule star_index:
         time="6:00:00",
     shell:
         """STAR --runMode genomeGenerate --runThreadN {threads} --genomeDir {output} \
-    --genomeFastaFiles {input.fasta} --sjdbOverhang 100 --sjdbGTFfile {input.gtf}"""
+    --genomeFastaFiles <(zcat {input.fasta}) --sjdbOverhang 100 --sjdbGTFfile {input.gtf}"""
 
 
 rule salmon_gentrome:
