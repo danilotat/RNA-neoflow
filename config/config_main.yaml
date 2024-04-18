@@ -11,6 +11,8 @@ OUTPUT_FOLDER : "ENEO_output/"
 # -- Relative paths to concatenate -- #
 # -- OUTPUT STRUCTURE -- #
 datadirs:
+  index_folder: "genome_index"
+  salmon_idx: "salmon_index"
   trimmed_reads: "trimmed_reads"
   trimming_report: "fastp_report"
   mapped_reads:  "mapped_reads"
@@ -53,11 +55,8 @@ datadirs:
 resources:
   # -- references -- #
   genome: "test_data/genome_chr6.fa.gz"
-  transcriptome: "/g100_work/IscrC_ENEO2/resources/fasta/Homo_sapiens.GRCh38.cdna.all.fa"
-  gtf: "/g100_work/IscrC_ENEO2/resources/gtf/Homo_sapiens.GRCh38.105.gtf"
-  # -- indices -- #
-  star_index: "/g100_work/IscrC_ENEO2/resources/genome_index"
-  salmon_idx: "/g100_work/IscrC_ENEO2/resources/salmon_index_GRCh38_ensembl"
+  transcriptome: "test_data/chr6_cdna.fa.gz"
+  gtf: "test_data/chr6_105.gtf"
   # -- vcfs -- #
   gnomad: "test_data/gnomad_chr6.vcf.gz"
   gsnps: "test_data/1000G_snsp_chr6.vcf.gz"
@@ -70,8 +69,6 @@ resources:
   # NOTE: for the sake of github testing, we're not using vep cache and vep plugin, referring
   # only to online for annotation. This doesn't scale at the whole VCF size, requiring the 
   # local copy of the vep cache. Refer to the documentation for the full setup
-  vep_cache: "/g100_work/IscrC_ENEO2/resources/vep_cache"
-  vep_plugin: "/g100_work/IscrC_ENEO2/resources/vep_plugin"
   intervals_coding: "workflow/supplementary_res/intervals_coding.BED.gz"
   vcfanno_binary: "workflow/utils/vcfanno_linux64"
   vcfanno_toml: "workflow/utils/vcfanno.toml"

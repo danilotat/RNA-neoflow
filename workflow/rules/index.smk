@@ -3,19 +3,25 @@ rule star_index:
         fasta=config["resources"]["genome"],
         gtf=config["resources"]["gtf"],
     output:
-        directory(config["datadirs"]["index_folder"] + "/genome_index"),
-    threads: config["params"]["thread"]
+        directory(
+            config["datadirs"]["index_folder"]
+            +
+            "/" +
+            "genome_index"),
+    threads: config["params"]["STAR"]["threads"]
     conda:
         "../envs/star.yml"
     log:
-        config["datadirs"]["logs"]["star_idx"] + "/star_idx.log",
+        config["datadirs"]["logs"]["star_idx"]
+        + "/"
+        + "star_idx.log",
     resources:
         mem="60G",
         ncpus=8,
         time="6:00:00",
     shell:
-        "STAR --runMode genomeGenerate --runThreadN {threads} --genomeDir {output} \
-    --genomeFastaFiles {input.fasta} --sjdbOverhang 100 --sjdbGTFfile {input.gtf}"
+        """STAR --runMode genomeGenerate --runThreadN {threads} --genomeDir {output} \
+    --genomeFastaFiles {input.fasta} --sjdbOverhang 100 --sjdbGTFfile {input.gtf}"""
 
 
 rule salmon_gentrome:
@@ -23,22 +29,33 @@ rule salmon_gentrome:
         genome=config["resources"]["genome"],
         cdna=config["resources"]["transcriptome"],
     output:
-        temp(config["resources"] + "/" + "gentrome.fa.gz"),
+        temp(
+            config["datadirs"]["salmon_idx"] 
+            + "/" 
+            + "gentrome.fa.gz"),
     log:
-        config["datadirs"]["logs"]["salmon_quant"] + "/" + "gentrome.log",
+        config["datadirs"]["logs"]["salmon_quant"] 
+        + "/" 
+        + "gentrome.log",
+    conda:
+        "../envs/salmon_new.yml"
     shell:
         "cat {input.genome} {input.cdna} | gzip > {output}"
 
 
 rule salmon_idx:
     input:
-        gentrome=config["resources"] + "/" + "gentrome.fa.gz",
+        gentrome=config["datadirs"]["salmon_idx"] 
+        + "/" 
+        + "gentrome.fa.gz",
     output:
-        config["resources"]["salmon_idx"] + "/" + "ctable.bin",
-    threads: config["params"]["threads"]["salmon"]
+        out=config["datadirs"]["salmon_idx"] 
+        + "/" 
+        + "ctable.bin",
+    threads: config["params"]["salmon"]["threads"]
     params:
-        outdir=config["resources"]["salmon_idx"],
-        extra=config["params"]["salmon"]["index"],
+        outdir=lambda w, output: os.path.dirname(os.path.abspath(output.out)),
+        extra=config["params"]["salmon"]["extra"]["index"],
     resources:
         mem="40G",
         ncpus=8,
@@ -46,7 +63,9 @@ rule salmon_idx:
     conda:
         "../envs/salmon_new.yml"
     log:
-        config["datadirs"]["logs"]["salmon_quant"] + "/" + "index.log",
+        config["datadirs"]["logs"]["salmon_quant"] 
+        + "/"
+        + "index.log",
     shell:
         """
         salmon index -t {input.gentrome} -i {params.outdir} \

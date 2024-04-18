@@ -27,7 +27,7 @@ rule targets:
             patient=patients,
         ),
 
-
+include: "rules/index.smk"
 include: "rules/alignment.smk"
 include: "rules/quantification.smk"
 include: "rules/bam_cleaning.smk"

@@ -1,6 +1,11 @@
+import os 
+
 rule salmon_quantification:
     input:
         unpack(get_fastq),
+        index=config["datadirs"]["salmon_idx"] 
+        + "/" 
+        + "ctable.bin",
     output:
         quant=config["OUTPUT_FOLDER"]
         + config["datadirs"]["salmon_quant"]
@@ -9,7 +14,7 @@ rule salmon_quantification:
         + "/"
         + "quant.sf",
     params:
-        index=config["resources"]["salmon_idx"],
+        index=lambda wc, input: os.path.dirname(os.path.abspath(input.index)),
         libtype=config["params"]["salmon"]["extra"]["libtype"],
         zip_ext=config["params"]["salmon"]["extra"]["zip_ext"],
         extra=config["params"]["salmon"]["extra"]["extra"],
@@ -46,7 +51,10 @@ rule export_quantification:
             + "quant.sf",
             patient=patients,
         ),
-        index=config["resources"]["salmon_idx"],
+        idx=config["datadirs"]["salmon_idx"] 
+        + "/" 
+        + "ctable.bin",
+        index=lambda wc, input: os.path.dirname(os.path.abspath(input.index)),
         cdna_fasta=config["resources"]["transcriptome"],
         annotation=config["resources"]["gtf"],
     output:

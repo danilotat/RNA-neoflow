@@ -1,7 +1,11 @@
+import os 
+
 rule align:
     input:
         unpack(get_fastq),
-        index=config["resources"]["star_index"],
+        index=config["datadirs"]["index_folder"] 
+        + "/" 
+        + "genome_index",
     output:
         bam=temp(
             config["OUTPUT_FOLDER"]
