@@ -69,6 +69,8 @@ resources:
   # NOTE: for the sake of github testing, we're not using vep cache and vep plugin, referring
   # only to online for annotation. This doesn't scale at the whole VCF size, requiring the 
   # local copy of the vep cache. Refer to the documentation for the full setup
+  hla_script: "workflow/scripts/HLA_typing.py"
+  germline_prob_script: "workflow/scripts/germProb.py"
   toml_script: "workflow/scripts/createTOML.py"
   intervals_coding: "test_data/exons_target.BED.gz"
   vcfanno_binary: "workflow/utils/vcfanno_linux64"
@@ -133,5 +135,8 @@ params:
     extra:
       assembly: "GRCh38"
       filtering: "--gencode_basic --coding_only --no_intergenic"
+      plugins:
+        Wildtype: workflow/utils/vep_plugins/Wildtype.pm
+        Frameshift: workflow/utils/vep_plugins/Frameshift.pm
   pMHC:
     threads: 4

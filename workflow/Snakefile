@@ -29,6 +29,7 @@ rule targets:
 
 include: "rules/index.smk"
 include: "rules/alignment.smk"
+include: "rules/annotate_variants.smk"
 include: "rules/quantification.smk"
 include: "rules/bam_cleaning.smk"
 include: "rules/base_recalibration.smk"

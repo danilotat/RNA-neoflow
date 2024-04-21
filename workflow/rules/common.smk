@@ -22,7 +22,7 @@ units = units.sort_index()
 slurm_logdir = config["slurm_log_dir"]
 logpath = Path(slurm_logdir)
 logpath.mkdir(parents=True, exist_ok=True)
-
+germProb_script = config["resources"]["germline_prob_script"]
 bam_final_path = config["datadirs"]["BQSR"]
 ref_fasta = config["resources"]["genome"]
 ref_dict = ref_fasta.replace(".fa", ".dict")
