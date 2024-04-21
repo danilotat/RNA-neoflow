@@ -24,7 +24,7 @@ rule annotate_variants:
         assembly=config["params"]["vep"]["extra"]["assembly"],
         filtering=config["params"]["vep"]["extra"]["filtering"],
         plugin_dir=lambda wc, input: os.path.dirname(input.plugin_wt),
-    singularity:
+    container:
         "docker://ensemblorg/ensembl-vep:release_105.0",
     resources:
         mem="6G",
