@@ -45,7 +45,7 @@ class variantProb():
     """
     This class extends the cyvcf2.Variant class to include the probability of being a germ-line variant.
     """
-    def __init__(self, variant: cyvcf2.Variant, pis: np.array):
+    def __init__(self, variant: cyvcf2.Variant):
         self.variant = variant
         self.fixed_pi = stats.beta.rvs(alpha_exonMut, beta_exonMut) * stats.beta.rvs(alpha_MutRatio, beta_MutRatio)
         self.is_het = self._read_genotype()[0]
