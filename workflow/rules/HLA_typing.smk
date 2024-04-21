@@ -70,17 +70,18 @@ rule genotype:
 
 rule extract_hla:
     input:
-        config["OUTPUT_FOLDER"]
+        genotype=config["OUTPUT_FOLDER"]
         + config["datadirs"]["HLA_typing"]
         + "/"
         + "{patient}_genotype.tsv",
+        hla_script=config["resources"]["hla_script"],
     output:
         config["OUTPUT_FOLDER"]
         + config["datadirs"]["HLA_typing"]
         + "/"
         + "{patient}_allele_input_pvacseq.csv",
-    conda:
-        "../envs/cyvcf2.yml"
+    container:
+        "docker://danilotat/netmhcpan-minimal"
     log:
         config["OUTPUT_FOLDER"] 
         + config["datadirs"]["logs"]["t1k"]
@@ -91,4 +92,4 @@ rule extract_hla:
         ncpus=2,
         mem="8G",
     shell:
-        "python3 scripts/HLA_typing.py {input} > {output}"
+        "python3 {input.hla_script} {input.genotype} > {output}"

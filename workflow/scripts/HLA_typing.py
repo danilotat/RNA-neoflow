@@ -12,11 +12,24 @@ def main(hla_genotype: str):
     df = df[df["gene_name"].isin(["HLA-A","HLA-B","HLA-C"])]
     HLAs = []
     for row in df.itertuples():
-        if row.quality_1 > 0:
-            HLAs.append(':'.join(row.allele_1.split(":")[:-1]))
-        if row.quality_2 > 0:
-            HLAs.append(':'.join(row.allele_2.split(":")[:-1]))
-    print(','.join(HLAs))
+        if row.quality_1 > 5:
+            # if more than 1 allele is present, keep only the first
+            if len(row.allele_1.split(",")) > 1:
+                hla = ':'.join(row.allele_1.split(",")[0].split(":")[:-1])
+            else:
+                hla = ':'.join(row.allele_1.split(":")[:-1])
+            if ":" in hla:
+                HLAs.append(hla)
+
+        if row.quality_2 > 5:
+            if len(row.allele_2.split(",")) > 1:
+                hla = ':'.join(row.allele_2.split(",")[0].split(":")[:-1])
+            else:
+                hla = ':'.join(row.allele_2.split(":")[:-1])
+            if ":" in hla:
+                HLAs.append(hla)
+    print(','.join([x for x in set(HLAs)]))
+
 
 
 if __name__ == '__main__':
