@@ -95,6 +95,7 @@ rule createTOML:
     input:
         config_main=configpath,
         toml_template=config["resources"]["vcfanno_toml"],
+        toml_script=config["resources"]["toml_script"],
     output:
         toml_file=config["OUTPUT_FOLDER"] + "vcfanno.toml",
     conda:
@@ -110,7 +111,7 @@ rule createTOML:
         mem="1G",
     shell:
         """
-        python3 scripts/createTOML.py -y {input.config_main} -t {input.toml_template} -o {output.toml_file}
+        python3 {input.toml_script} -y {input.config_main} -t {input.toml_template} -o {output.toml_file}
         """
 
 
@@ -124,6 +125,7 @@ rule germProb:
         + config["datadirs"]["VCF_out"]
         + "/"
         + "{patient}_DP_filt.vcf.gz.tbi",
+        script=germProb_script,
     output:
         vcf=config["OUTPUT_FOLDER"]
         + config["datadirs"]["VCF_out"]
@@ -142,7 +144,7 @@ rule germProb:
         mem="4G",
     shell:
         """
-        python3 scripts/germProb.py {input.vcf} {output.vcf}
+        python3 {input.script} {input.vcf} {output.vcf}
         """
 
 
