@@ -16,6 +16,6 @@ jobs:
       uses: snakemake/snakemake-github-action@v1.23.0
       with:
         snakefile: workflow/Snakefile
-        args: "--use-conda --use-singularity --show-failed-logs -j 10 --conda-cleanup-pkgs cache --conda-frontend conda"
+        args: "--use-conda --software-deployment-method apptainer --show-failed-logs -j 10 --conda-cleanup-pkgs cache --conda-frontend conda "
         directory: .
         stagein: "conda config --set channel_priority flexible"
