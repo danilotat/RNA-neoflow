@@ -60,7 +60,7 @@ resources:
   # -- vcfs -- #
   gnomad: "test_data/gnomad_chr6.vcf.gz"
   gsnps: "test_data/1000G_snsp_chr6.vcf.gz"
-  dbsnps: "test_data/dbsnpALFA_chr6.vcf.gz"
+  dbsnps: "test_data/dbsnpALFA_chr6_filt.vcf.gz"
   REDI: "test_data/REDI_chr6.BED.gz"
   small_exac: "test_data/exac_chr6.vcf.gz"
   indel: "test_data/indels_chr6.vcf.gz"
