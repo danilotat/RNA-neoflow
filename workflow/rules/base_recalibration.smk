@@ -86,6 +86,10 @@ rule compressBam:
         + config["datadirs"]["BQSR"]
         + "/"
         + "{patient}_recal.cram",
+        index=config["OUTPUT_FOLDER"]
+        + config["datadirs"]["BQSR"]
+        + "/"
+        + "{patient}_recal.cram.crai",
     threads: config["params"]["samtools"]["threads"],
     conda:
         "../envs/samtools.yml"
@@ -101,4 +105,5 @@ rule compressBam:
     shell:
         """
         samtools view -T {input.reference} -C -o {output.cram} {input.bam}
+        samtools index {output.cram}
         """

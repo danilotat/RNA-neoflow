@@ -17,7 +17,7 @@ rule align:
         "../envs/star.yml"
     params:
         index=lambda wc, input: input.index,
-        prefix=lambda wc, output: os.path.join(output.bam, wc.patient, "_"),
+        prefix=lambda wc, output: os.path.join(os.path.dirname(os.path.abspath(output.bam)), f"{wc.patient}_"),
         extra="--sjdbGTFfile {} {}".format(
             config["resources"]["gtf"], config["params"]["STAR"]["extra"]
         ),
