@@ -28,10 +28,10 @@ jobs:
         mamba install -c conda-forge -c bioconda snakemake singularity sra-tools
     - name: Download example data
       run: |
-        fastq-dump fastq-dump SRR9697665 --gzip --split-files -O test_data
+        fastq-dump SRR9697665 --gzip --split-files -O test_data
         echo "NCI_4283,test_data/SRR9697665_1.fastq.gz,test_data/SRR9697665_2.fastq.gz" >> units.csv
         echo "NCI_4283" >> patients.csv
-        
+
     - run: echo "Finish installing snakemake"
     - name: Run snakemake
       run: |
