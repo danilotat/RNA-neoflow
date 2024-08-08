@@ -30,8 +30,6 @@ jobs:
       run: |
         wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR969/005/SRR9697665/SRR9697665_1.fastq.gz -O test_data/SRR9697665_1.fastq.gz
         wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR969/005/SRR9697665/SRR9697665_2.fastq.gz -O test_data/SRR9697665_2.fastq.gz
-        echo "NCI_4283,test_data/SRR9697665_1.fastq.gz,test_data/SRR9697665_2.fastq.gz" >> units.csv
-        echo "NCI_4283" >> patients.csv
 
     - run: echo "Finish installing snakemake"
     - name: Run snakemake
