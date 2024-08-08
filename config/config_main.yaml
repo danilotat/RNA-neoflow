@@ -77,6 +77,7 @@ resources:
   vcfanno_toml: "workflow/utils/vcfanno.toml"
   vcfanno_lua: "workflow/utils/custom.lua"
   t1k_file: "workflow/supplementary_res/hlaidx_rna_seq.fa"
+  giab_intervals: "test_data/GIAB_chr6.bed.gz"
 # -- TOOLS PARAMS -- #
 # moved from a tool centered to a resource type one 
 params:
