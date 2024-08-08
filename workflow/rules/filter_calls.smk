@@ -57,6 +57,7 @@ rule filtercalls:
         + config["datadirs"]["VCF_out"]
         + "/"
         + "{patient}_annot.vcf.gz",
+        giab_intervals=config["resources"]["giab_intervals"],
     output:
         vcf=temp(
             config["OUTPUT_FOLDER"]
@@ -85,8 +86,8 @@ rule filtercalls:
     shell:
         """
         bcftools view -e "GT='mis'" {input.vcf} |\
-         bcftools view -i "FILTER='PASS' & (DP > 5) & (FORMAT/AD[0:0] > 2)" --threads {threads} |\
-         bgzip -c > {output.vcf}
+         bcftools view -i "FILTER='PASS' & (DP > 5) & (FORMAT/AD[0:1] > 2)" --threads {threads} | bedtools intersect -header -v -a stdin -b {input.giab_intervals} \
+         -sorted | bgzip -c > {output.vcf}
         tabix -p vcf {output.vcf}
         """
 
