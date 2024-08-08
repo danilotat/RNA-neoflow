@@ -28,7 +28,8 @@ jobs:
         mamba install -c conda-forge -c bioconda snakemake singularity sra-tools
     - name: Download example data
       run: |
-        fastq-dump SRR9697665 --gzip --split-files -O test_data
+        wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR969/005/SRR9697665/SRR9697665_1.fastq.gz -O test_data/SRR9697665_1.fastq.gz
+        wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR969/005/SRR9697665/SRR9697665_2.fastq.gz -O test_data/SRR9697665_2.fastq.gz
         echo "NCI_4283,test_data/SRR9697665_1.fastq.gz,test_data/SRR9697665_2.fastq.gz" >> units.csv
         echo "NCI_4283" >> patients.csv
 
