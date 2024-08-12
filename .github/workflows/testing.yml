@@ -28,8 +28,8 @@ jobs:
         mamba install -c conda-forge -c bioconda snakemake singularity sra-tools
     - name: Download example data
       run: |
-        wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR969/005/SRR9697665/SRR9697665_1.fastq.gz -O test_data/SRR9697665_1.fastq.gz
-        wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR969/005/SRR9697665/SRR9697665_2.fastq.gz -O test_data/SRR9697665_2.fastq.gz
+        wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR969/008/SRR9697628/SRR9697628_1.fastq.gz -O test_data/SRR9697628_1.fastq.gz
+        wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR969/008/SRR9697628/SRR9697628_2.fastq.gz -O test_data/SRR9697628_2.fastq.gz
 
     - run: echo "Finish installing snakemake"
     - name: Run snakemake
